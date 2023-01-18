@@ -1,4 +1,5 @@
 from datetime import date, datetime, time
+from typing import Tuple
 
 import pandas as pd
 import pandera as pa
@@ -13,28 +14,24 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
 
     gender: Series[int] = pa.Field(
         description=nhsdd.gender["url"],
-        isin=list(list(nhsdd.gender["mapping"].keys())),
+        isin=list(nhsdd.gender["mapping"].keys()),
         nullable=False,
-        coerce=True,
     )
 
     ethnos: Series[str] = pa.Field(
         description=nhsdd.ethnos["url"],
         isin=list(nhsdd.ethnos["mapping"].keys()),
         nullable=False,
-        coerce=True,
     )
 
     procodet: Series[str] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/organisation_code__code_of_provider_.html",
         nullable=False,
-        coerce=True,
     )
 
     sitetret: Series[str] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/site_code__of_treatment_.html",
         nullable=False,
-        coerce=True,
     )
 
     townsend_score_decile: Series[int] = pa.Field(
@@ -47,22 +44,21 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     admimeth: Series[str] = pa.Field(
         description=nhsdd.admimeth["url"],
         isin=list(nhsdd.admimeth["mapping"].keys()),
-        coerce=True,
         nullable=True,
     )
 
     admisorc: Series[str] = pa.Field(
-        description=nhsdd.admisorc["url"],
+        description="https://www.datadictionary.nhs.uk/data_elements/admission_source__hospital_provider_spell_.html",
         isin=list(nhsdd.admisorc["mapping"].keys()),
-        coerce=True,
         nullable=True,
     )
+
     admidate: Series[date] = pa.Field(
         ge=date(year=2021, month=10, day=1),
         le=date(year=2022, month=9, day=30),
-        coerce=True,
         nullable=False,
     )
+
     admitime: Series[str] = pa.Field(
         str_matches="2[0-3]|[01]?[0-9]:[0-5][0-9]", nullable=True, coerce=True
     )
@@ -70,16 +66,15 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     disdest: Series[str] = pa.Field(
         description=nhsdd.disdest["url"],
         isin=list(nhsdd.disdest["mapping"].keys()),
-        coerce=True,
         nullable=True,
     )
 
     dismeth: Series[str] = pa.Field(
         description=nhsdd.dismeth["url"],
         isin=list(nhsdd.dismeth["mapping"].keys()),
-        coerce=True,
         nullable=True,
     )
+
     length_of_stay: Series[float] = pa.Field(nullable=True)
 
     epiorder: Series[int] = pa.Field(nullable=True)
@@ -89,6 +84,9 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
         le=130,
         nullable=True,
     )
+
+    class Config:
+        coerce = True
 
 
 AdmittedCareEpisodeSchema = AdmittedCareEpisodeSchema.to_schema().add_columns(
@@ -113,12 +111,14 @@ AdmittedCareEpisodeSchema = AdmittedCareEpisodeSchema.to_schema().add_columns(
 
 
 class EmergencyCareEpisodeSchema(pa.SchemaModel):
+
     visit_id: Series[int] = pa.Field(nullable=False)
+
     patient_id: Series[int] = pa.Field(nullable=False)
 
     gender: Series[int] = pa.Field(
         description=nhsdd.gender["url"],
-        isin=list(list(nhsdd.gender["mapping"].keys())),
+        isin=list(nhsdd.gender["mapping"].keys()),
         nullable=False,
     )
 
@@ -250,3 +250,29 @@ EmergencyCareEpisodeSchema = EmergencyCareEpisodeSchema.to_schema().add_columns(
         ),
     }
 )
+
+
+def _validate_dataframe(
+    df: pd.DataFrame, schema: pa.SchemaModel
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    df_errors = pd.DataFrame()
+    try:
+        # Capture all errors
+        # https://pandera.readthedocs.io/en/stable/lazy_validation.html
+        schema.validate(df, lazy=True)
+    except pa.errors.SchemaErrors as ex:
+        df_errors = df.merge(
+            ex.failure_cases, how="right", left_index=True, right_on="index"
+        )
+        df = df[~df.index.isin(ex.failure_cases["index"])]
+        print(ex.args[0])
+    finally:
+        return df, df_errors
+
+
+def validate_admitted_care_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    return _validate_dataframe(df, AdmittedCareEpisodeSchema)
+
+
+def validate_emergency_care_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    return _validate_dataframe(df, EmergencyCareEpisodeSchema)
