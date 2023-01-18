@@ -115,3 +115,25 @@ dismeth = {
         "9": "DISCHARGE METHOD not known",
     },
 }
+
+edattendcat = {
+    "url": "https://www.datadictionary.nhs.uk/data_elements/emergency_care_attendance_category.html",
+    "mapping": {
+        "1": "Unplanned First Emergency Care Attendance  for a new clinical condition (or deterioration of a chronic condition).",
+        "2": "Unplanned Follow-up Emergency Care Attendance  for the same or a related clinical condition and within 7 days ofthe First Emergency Care Attendance at THIS  Emergency Care Department",
+        "3": "Unplanned Follow-up Emergency Care Attendance  for the same or a related clinical condition and within 7 days ofthe First Emergency Care Attendance at ANOTHER  Emergency Care Department",
+        "4": "Planned Follow-up Emergency Care Attendance within 7 days of the First Emergency Care Attendance  at THIS  Emergency Care Department",
+        "X": "Not Applicable (PATIENT dead on arrival in Emergency Care Department)",
+    },
+}
+
+eddepttype = {
+    "url": "https://www.datadictionary.nhs.uk/data_elements/emergency_care_department_type.html",
+    "mapping": {
+        "1": "Emergency departments are a CONSULTANT  led 24 hour service with full resuscitation facilities and designated accommodation for the reception of emergency care PATIENTS",
+        "2": "CONSULTANT  led mono specialtyemergency careservice (e.g. ophthalmology, dental) with designated accommodation for the reception of PATIENTS",
+        "3": "Other type of A&E/minor injury ACTIVITY  with designated accommodation for the reception of emergency care PATIENTS. The department may be doctor led, GENERAL PRACTITIONER ledor NURSE  led and treats at least minor injuries and illnesses and can be routinely accessed without APPOINTMENT. A SERVICE  mainly or entirely APPOINTMENT  based (for example a GP Practice  or Out-Patient Clinic) is excluded even though it may treat a number of PATIENTS  with minor illness or injury. Includes Urgent Treatment Centres.Excludes NHS walk-in centres",
+        "4": "NHS walk in centres",
+        "5": "Ambulatory Emergency Care Service. Note this is only  valid for piloting purposes in the CDS V6-2-2 Type 011 - Emergency Care Commissioning Data Set/ CDS V6-2-3 Type 011 - Emergency Care Commissioning Data Set and must not be submitted in the Patient Level Information Costing System Integrated Data Set - Emergency Care (Acute).",
+    },
+}
