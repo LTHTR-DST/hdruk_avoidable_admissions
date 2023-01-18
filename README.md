@@ -6,7 +6,7 @@ Please see <https://mattstammers.github.io/hdruk_avoidable_admissions_collaborat
 
 ## Project Setup
 
-The project setup is based on an opinionated [cookiecutter datascience project](https://drivendata.github.io/cookiecutter-data-science/).
+The project setup is based on an opinionated [cookiecutter datascience project](https://drivendata.github.io/cookiecutter-data-science/) template.
 There are a few additional components to ease development and facilitate a collaborative workspace.
 
 The setup has only been tested on Windows 10.
@@ -20,7 +20,7 @@ Before setting this project up, the following requirements need to be met:
 
 1. Start Anaconda powershell prompt and navigate to the root of this folder.
 2. Execute `./init.bat`
-3. Activate the environment with `conda activate hdruk`
+3. Activate the environment with `conda activate hdruk_aa`
 4. Start JupyterLab with `jupyter-lab`
 5. Alternatively open an IDE (e.g. Code) and set python environment to hdruk_aa
 
