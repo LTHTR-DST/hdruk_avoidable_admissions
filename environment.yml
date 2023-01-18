@@ -12,6 +12,7 @@ dependencies:
   - isort
   - jupyterlab
   - jupyterlab_code_formatter
+  - nbstripout
   - pandas
   - pandas-profiling
   - pip
