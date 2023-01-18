@@ -12,7 +12,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     visit_id: Series[int] = pa.Field(nullable=False)
     patient_id: Series[int] = pa.Field(nullable=False)
 
-    gender: Series[int] = pa.Field(
+    gender: Series[str] = pa.Field(
         description=nhsdd.gender["url"],
         isin=list(nhsdd.gender["mapping"].keys()),
         nullable=False,
@@ -116,7 +116,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
 
     patient_id: Series[int] = pa.Field(nullable=False)
 
-    gender: Series[int] = pa.Field(
+    gender: Series[str] = pa.Field(
         description=nhsdd.gender["url"],
         isin=list(nhsdd.gender["mapping"].keys()),
         nullable=False,
