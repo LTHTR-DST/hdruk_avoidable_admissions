@@ -1,4 +1,4 @@
-from datetime import date, datetime, time
+from datetime import date, datetime
 from typing import Tuple
 
 import pandas as pd
@@ -9,7 +9,7 @@ from avoidable_admissions.data import nhsdd
 
 
 class AdmittedCareEpisodeSchema(pa.SchemaModel):
-    visit_id: Series[int] = pa.Field(nullable=False)
+    visit_id: Series[int] = pa.Field(nullable=False, unique=True)
     patient_id: Series[int] = pa.Field(nullable=False)
 
     gender: Series[str] = pa.Field(
@@ -36,7 +36,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
 
     townsend_score_decile: Series[int] = pa.Field(
         description="https://statistics.ukdataservice.ac.uk/dataset/2011-uk-townsend-deprivation-scores",
-        ge=1,
+        ge=0,  # fill missing values with 0 to pass validation.
         le=10,
         nullable=True,
     )

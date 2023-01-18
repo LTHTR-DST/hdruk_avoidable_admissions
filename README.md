@@ -1,12 +1,34 @@
-hdruk_avoidable_admissions
-==============================
+# HDRUK Avoidable Admissions Analytics
 
 HDRUK Data Science Collaboration on Avoidable Admissions in the NHS.
 
 Please see <https://mattstammers.github.io/hdruk_avoidable_admissions_collaboration_docs/> for more information.
 
-Project Organization
-------------
+## Project Setup
+
+The project setup is based on an opinionated [cookiecutter datascience project](https://drivendata.github.io/cookiecutter-data-science/).
+There are a few additional components to ease development and facilitate a collaborative workspace.
+
+The setup has only been tested on Windows 10.
+Before setting this project up, the following requirements need to be met:
+
+- Anaconda or Miniconda installed and access to the Anaconda Powershell prompt
+- Mamba (`conda install mamba -n base`)
+- Git
+
+### Steps
+
+1. Start Anaconda powershell prompt and navigate to the root of this folder.
+2. Execute `./init.bat`
+3. Activate the environment with `conda activate hdruk`
+4. Start JupyterLab with `jupyter-lab`
+5. Alternatively open an IDE (e.g. Code) and set python environment to hdruk_aa
+
+### Known issues
+
+- _pandas-profiling_ is not compatible with Python 3.11 yet. If this is critical, the options are either to downgrade Python to 3.10 or to use a separate environment with Python<=3.10 to run pandas-profiling. As pandas-profiling will only be used infrequently, the latter may be a better option. Suggestions welcome.
+
+## Project Organization
 
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
