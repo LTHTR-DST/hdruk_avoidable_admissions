@@ -15,6 +15,7 @@ dependencies:
   - nbstripout
   - pandas
   - pandas-profiling
+  - pandera
   - pip
   - pre-commit
   - python-dotenv
