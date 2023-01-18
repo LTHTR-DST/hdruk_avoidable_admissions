@@ -24,9 +24,15 @@ Before setting this project up, the following requirements need to be met:
 4. Start JupyterLab with `jupyter-lab`
 5. Alternatively open an IDE (e.g. Code) and set python environment to hdruk_aa
 
+### Additional features
+
+The project expects collaboration using `git` and GitHub and uses [`pre-commit`](https://pre-commit.com/) git hooks
+to help with identifying and resolving issues with code quality.
+See `.pre-commit-config.yaml` for what features are enabled by default.
+
 ### Known issues
 
-- _pandas-profiling_ is not compatible with Python 3.11 yet. If this is critical, the options are either to downgrade Python to 3.10 or to use a separate environment with Python<=3.10 to run pandas-profiling. As pandas-profiling will only be used infrequently, the latter may be a better option. Suggestions welcome.
+- `pandas-profiling` is not compatible with Python 3.11 yet. If this is critical, the options are either to downgrade Python to 3.10 or to use a separate environment with Python<=3.10 to run pandas-profiling. As pandas-profiling will only be used infrequently, the latter may be a better option. Suggestions welcome.
 
 ## Project Organization
 
@@ -56,24 +62,35 @@ Before setting this project up, the following requirements need to be met:
     │                         generated with `pip freeze > requirements.txt`
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
+    ├── avoidable_admissions <- Source code for use in this project.
+    │   ├── __init__.py    <- Makes avoidable_admissions a Python module
     │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
+    │   ├── data           <- Scripts to download or generate and validate data
     │   │
     │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
     │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
+    │   ├── models         <- Scripts to train models and then use trained models to make predictions
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+
+The following directories are not in version control and will need to be manually created by the user.
+
+    ├── data
+        ├── external       <- Data from third party sources.
+        ├── interim        <- Intermediate data that has been transformed.
+        ├── processed      <- The final, canonical data sets for modeling.
+        └── raw            <- The original, immutable data dump.
+
+Alternatively, create a `.env` file with database credentials, paths to data directories, etc. and
+load this using `python-dotenv`.
+See `.env.sample`  and <https://pypi.org/project/python-dotenv/> for how to do this.
+Avoid hardcoding local paths in notebooks or code to ensure reproducibility between collaborators.
+
+**DO NOT COMMIT CREDENTIALS TO VERSION CONTROL!**
+
+**ENSURE NO PII IS EXPOSED BEFORE COMMITING TO VERSION CONTROL!**
 
 --------
 
