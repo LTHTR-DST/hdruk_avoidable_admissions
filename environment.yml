@@ -8,10 +8,13 @@ channels:
 dependencies:
   - black
   - bokeh
+  - bs4
   - holoviews
+  - html5lib
   - isort
   - jupyterlab
   - jupyterlab_code_formatter
+  - lxml
   - nbstripout
   - pandas
   - pandas-profiling
