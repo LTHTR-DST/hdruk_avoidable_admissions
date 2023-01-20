@@ -1,4 +1,4 @@
-[![Open in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=dev&repo=590237327&machine=basicLinux32gb&location=WestEurope)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=dev&repo=590237327&machine=basicLinux32gb&location=WestEurope)
 
 # HDRUK Avoidable Admissions Analytics
 
