@@ -2,7 +2,7 @@
 
 Caution: This will rewrite data/nhsdd.py if called from this directory.
 
-```{code-block} python
+```
 cd avoidable_admissions/utils
 python nhsdd_generator.py
 ```
@@ -73,17 +73,17 @@ def generate_nhsdd_snomed():
     The latest edition of SNOMED-GB is from 2019-10-01.
 
 
-    'accommodationstatus': 'https://www.datadictionary.nhs.uk/data_elements/accommodation_status__snomed_ct_.html'
-    'edarrivalmode': 'https://www.datadictionary.nhs.uk/data_elements/emergency_care_arrival_mode__snomed_ct_.html'
-    'edattendsource': 'https://www.datadictionary.nhs.uk/data_elements/emergency_care_attendance_source__snomed_ct_.html'
-    'edacuity': 'https://www.datadictionary.nhs.uk/data_elements/emergency_care_acuity__snomed_ct_.html'
-    'edcheifcomplaint': 'https://www.datadictionary.nhs.uk/data_elements/emergency_care_chief_complaint__snomed_ct_.html'
-    'edattenddispatch': 'https://www.datadictionary.nhs.uk/data_elements/emergency_care_discharge_destination__snomed_ct_.html'
-    'edrefservice': 'https://www.datadictionary.nhs.uk/data_elements/referred_to_service__snomed_ct_.html'
-    'edcomorb': 'https://www.datadictionary.nhs.uk/data_elements/comorbidity__snomed_ct_.html'
-    'eddiag': 'https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis_qualifier__snomed_ct_.html'
-    'edinvest': 'https://www.datadictionary.nhs.uk/data_elements/emergency_care_clinical_investigation__snomed_ct_.html'
-    'edtreat': 'https://www.datadictionary.nhs.uk/data_elements/emergency_care_procedure__snomed_ct_.html'
+    - accommodationstatus: [ACCOMMODATION_STATUS](https://www.datadictionary.nhs.uk/data_elements/accommodation_status__snomed_ct_.html)
+    - edarrivalmode: [EMERGENCY_CARE_ARRIVAL_MODE](https://www.datadictionary.nhs.uk/data_elements/emergency_care_arrival_mode__snomed_ct_.html)
+    - edattendsource: [EMERGENCY_CARE_ATTENDANCE_SOURCE](https://www.datadictionary.nhs.uk/data_elements/emergency_care_attendance_source__snomed_ct_.html)
+    - edacuity: [EMERGENCY_CARE_ACUITY](https://www.datadictionary.nhs.uk/data_elements/emergency_care_acuity__snomed_ct_.html)
+    - edcheifcomplaint: [EMERGENCY_CARE_CHIEF_COMPLAINT](https://www.datadictionary.nhs.uk/data_elements/emergency_care_chief_complaint__snomed_ct_.html)
+    - edattenddispatch: [EMERGENCY_CARE_DISCHARGE_DESTINATION](https://www.datadictionary.nhs.uk/data_elements/emergency_care_discharge_destination__snomed_ct_.html)
+    - edrefservice: [REFERRED_TO_SERVICE](https://www.datadictionary.nhs.uk/data_elements/referred_to_service__snomed_ct_.html)
+    - edcomorb: [COMORBIDITY](https://www.datadictionary.nhs.uk/data_elements/comorbidity__snomed_ct_.html)
+    - eddiag: [EMERGENCY_CARE_DIAGNOSIS_QUALIFIER](https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis_qualifier__snomed_ct_.html)
+    - edinvest: [EMERGENCY_CARE_CLINICAL_INVESTIGATION](https://www.datadictionary.nhs.uk/data_elements/emergency_care_clinical_investigation__snomed_ct_.html)
+    - edtreat: [EMERGENCY_CARE_PROCEDURE](https://www.datadictionary.nhs.uk/data_elements/emergency_care_procedure__snomed_ct_.html)
 
     **Replace this method with one that uses the most recent edition of SNOMED-UK**
 

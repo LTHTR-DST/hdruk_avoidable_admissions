@@ -130,12 +130,12 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
 
     townsend_score_decile: Series[int] = pa.Field(
         description="https://statistics.ukdataservice.ac.uk/dataset/2011-uk-townsend-deprivation-scores",
-        ge=1,
+        ge=0,  # fill missing values with 0 to pass validation.
         le=10,
         nullable=True,
     )
 
-    accommodationstatus_snomedct: Series[int] = pa.Field(
+    accommodationstatus: Series[int] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/accommodation_status__snomed_ct_.html",
         nullable=True,
     )
@@ -172,10 +172,14 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
     )
     edarrivaldatetime: Series[datetime] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_arrival_date.html",
+        ge=datetime(year=2021, month=10, day=1),
+        le=datetime(year=2022, month=9, day=30),
         nullable=True,
     )
     activage: Series[int] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/age_at_cds_activity_date.html",
+        ge=0,
+        le=130,
         nullable=True,
     )
     edacuity: Series[int] = pa.Field(
@@ -238,12 +242,6 @@ EmergencyCareEpisodeSchema = EmergencyCareEpisodeSchema.to_schema().add_columns(
         ),
         "edtreat_[0-9]{2}": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_procedure__snomed_ct_.html",
-            dtype=int,
-            nullable=True,
-            regex=True,
-        ),
-        "eddiag_[0-9]{2}": pa.Column(
-            description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis_qualifier__snomed_ct_.html",
             dtype=int,
             nullable=True,
             regex=True,
