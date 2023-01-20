@@ -1,3 +1,5 @@
+[![Open in GitHub Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=dev&repo=590237327&machine=basicLinux32gb&location=WestEurope)
+
 # HDRUK Avoidable Admissions Analytics
 
 HDRUK Data Science Collaboration on Avoidable Admissions in the NHS.
