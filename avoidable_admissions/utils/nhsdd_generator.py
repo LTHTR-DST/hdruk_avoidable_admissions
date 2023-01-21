@@ -111,7 +111,7 @@ def generate_nhsdd_snomed():
         print("Getting SNOMED Refset ID for ", k)
         r = requests.get(v)
         soup = BeautifulSoup(r.text, features="lxml")
-        a = soup.find(name="a", href=re.compile("https://termbrowser.nhs.uk/"))
+        a = soup.find(name="a", href=re.compile("https://termbrowser\.nhs\.uk/"))
 
         try:
             refset_id = int(a.attrs["href"].split("=")[-1])
