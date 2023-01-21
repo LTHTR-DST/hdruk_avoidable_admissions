@@ -1,0 +1,8 @@
+site_name: HDRUK Avoidable avoidable_admissions
+theme: readthedocs
+plugins:
+- search
+- mkdocstrings
+nav:
+- Home: index.md
+- Validate: validate.md

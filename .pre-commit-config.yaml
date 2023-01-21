@@ -1,0 +1,25 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v2.3.0
+  hooks:
+  - id: check-yaml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+  - id: detect-private-key
+- repo: https://github.com/psf/black
+  rev: 22.12.0
+  hooks:
+  - id: black-jupyter
+    language_version: python3.11
+- repo: https://github.com/pycqa/isort
+  rev: 5.11.2
+  hooks:
+    - id: isort
+      name: isort (python)
+# Caution: This will remove output cells in all Jupyter notebooks.
+# However, prevents accidentally committing sensitive outputs in notebooks.
+# To share output of notebooks that are not reproducible for others, export to html and save in reports/ folder.
+- repo: https://github.com/kynan/nbstripout
+  rev: 0.6.1
+  hooks:
+    - id: nbstripout
