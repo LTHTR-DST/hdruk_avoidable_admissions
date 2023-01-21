@@ -18,12 +18,17 @@
 
 	,
 	"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && pip install -e .",
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"ms-python.python"
-			]
-		}
+
+	"extensions": [
+		"ms-python.python",
+		"ms-python.vscode-pylance",
+		"njpwerner.autodocstring",
+		"davidanson.vscode-markdownlint"
+	],
+
+	"settings": {
+		"python.formatting.provider": "black",
+		"python.analysis.completeFunctionParens": true,
 	}
 	// Configure tool-specific properties.
 	// "customizations": {},
