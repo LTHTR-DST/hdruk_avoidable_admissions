@@ -18,7 +18,6 @@
 
 	,
 	"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && pip install -e .",
-	"postAttachCommand": "git init . && pre-commit install-hooks",
 	"customizations": {
 		"vscode": {
 			"extensions": [
