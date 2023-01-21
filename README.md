@@ -26,17 +26,41 @@ Before setting this project up, the following requirements need to be met:
 4. Start JupyterLab with `jupyter-lab`
 5. Alternatively open an IDE (e.g. Code) and set python environment to hdruk_aa
 
-### Additional features
+## Additional features
+
+### pre-commit
 
 The project expects collaboration using `git` and GitHub and uses [`pre-commit`](https://pre-commit.com/) git hooks
 to help with identifying and resolving issues with code quality.
 See `.pre-commit-config.yaml` for what features are enabled by default.
 
-### Known issues
+### Development Containers
+
+This repo allows the usage of containers for full-featured development using [development containers](https://containers.dev/).
+This can be done either locally using [Visual Studio Code](https://code.visualstudio.com/docs/devcontainers/containers)  or remotely using [GitHub Codespaces](https://github.com/features/codespaces).
+
+**Local Development:**
+To enable containerised development locally, clone the repositiory and open in VS Code.
+Code should automatically prompt to reopen in a devcontainer.
+This requires [Docker Desktop](https://www.docker.com/products/docker-desktop) to be installed.
+It can take several minutes for the container to be created the first time while all required dependencies are installed.
+This removes the need for creating a new conda environment.
+Access to data should be configured as described at the end of [project organisation.](#project-organisation)
+
+**Remote Development:**
+Remote development is made easy using [GitHub Codespaces](https://github.com/features/codespaces) with configurable compute.
+Compute instances are not deployable in the UK region yet which raises data governance issues :warning:.
+However, this option is useful for writing documentation and code that is not dependent on data.
+For instance, updating Markdown cells in Jupyter notebooks and docstrings is entirely possible.
+Making API calls from this environment to generate code lists is also supported.
+
+Important: :no_entry: Patient level data must not be uploaded into a codepace even if it is excluded from version control.
+
+## Known issues
 
 - `pandas-profiling` is not compatible with Python 3.11 yet. If this is critical, the options are either to downgrade Python to 3.10 or to use a separate environment with Python<=3.10 to run pandas-profiling. As pandas-profiling will only be used infrequently, the latter may be a better option. Suggestions welcome.
 
-## Project Organization
+## Project Organisation
 
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
@@ -77,7 +101,7 @@ See `.pre-commit-config.yaml` for what features are enabled by default.
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
 
-The following directories are not in version control and will need to be manually created by the user.
+:file_folder: The following directories are not in version control and will need to be manually created by the user.
 
     ├── data
         ├── external       <- Data from third party sources.
