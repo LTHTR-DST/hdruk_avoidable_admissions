@@ -114,9 +114,9 @@ load this using `python-dotenv`.
 See `.env.sample`  and <https://pypi.org/project/python-dotenv/> for how to do this.
 Avoid hardcoding local paths in notebooks or code to ensure reproducibility between collaborators.
 
-**DO NOT COMMIT CREDENTIALS TO VERSION CONTROL!**
+:x: **DO NOT COMMIT CREDENTIALS TO VERSION CONTROL!**
 
-**ENSURE NO PII IS EXPOSED BEFORE COMMITING TO VERSION CONTROL!**
+:x: **ENSURE NO PII IS EXPOSED BEFORE COMMITING TO VERSION CONTROL!**
 
 --------
 
