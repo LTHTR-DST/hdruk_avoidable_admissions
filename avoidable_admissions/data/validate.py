@@ -186,7 +186,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_acuity__snomed_ct_.html",
         nullable=True,
     )
-    edcheifcomplaint: Series[int] = pa.Field(
+    edchiefcomplaint: Series[int] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_chief_complaint__snomed_ct_.html",
         nullable=True,
     )
