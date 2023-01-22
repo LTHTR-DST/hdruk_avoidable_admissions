@@ -254,16 +254,38 @@ def _validate_dataframe(
     df: pd.DataFrame, schema: pa.SchemaModel
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     df_errors = pd.DataFrame()
+
+    # todo: document this behaviour to warn user that index will be dropped.
+    # alternatively find a way to set a unique key for each row - important for merging errors
+    df = df.copy().reset_index(drop=True)
+
     try:
         # Capture all errors
         # https://pandera.readthedocs.io/en/stable/lazy_validation.html
         schema.validate(df, lazy=True)
     except pa.errors.SchemaErrors as ex:
-        df_errors = df.merge(
-            ex.failure_cases, how="right", left_index=True, right_on="index"
-        )
-        df = df[~df.index.isin(ex.failure_cases["index"])]
+
         print(ex.args[0])
+
+        df_errors = ex.failure_cases.copy()
+
+        # First get the rows that are causing errors
+        df_errors["index"] = df_errors["index"].fillna(df.index.max() + 1)
+        df_errors = df.merge(df_errors, how="right", left_index=True, right_on="index")
+        df_errors["index"] = df_errors["index"].replace(df.index.max() + 1, None)
+
+        # Column name mismatches will have an 'index' of NaN which causes merge to fail
+        # If a column name is not present, then all rows should be returned as errors
+
+        if df_errors["index"].hasnans:  # this
+            # there is a column error. drop all rows from the 'good' dataframe
+            df = df.iloc[0:0]
+
+            print("No data will pass validation due to column error. See output above.")
+
+        else:
+            df = df[~df.index.isin(df_errors["index"])]
+
     finally:
         return df, df_errors
 
