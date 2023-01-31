@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 
-def _age(ecds: pd.DataFrame) -> pd.DataFrame:
+def _age(df: pd.DataFrame) -> pd.DataFrame:
 
     age_labels = [
         "<20",
@@ -23,14 +23,14 @@ def _age(ecds: pd.DataFrame) -> pd.DataFrame:
     ]
     age_bins = [0, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 999]
 
-    ecds["activage_cat"] = pd.cut(ecds.activage, bins=age_bins, labels=age_labels)
+    df["activage_cat"] = pd.cut(df.activage, bins=age_bins, labels=age_labels)
 
-    return ecds
+    return df
 
 
-def _gender(ecds: pd.DataFrame) -> pd.DataFrame:
+def _gender(df: pd.DataFrame) -> pd.DataFrame:
 
-    ecds["gender_cat"] = ecds.gender.astype(str).replace(
+    df["gender_cat"] = df.gender.astype(str).replace(
         {
             "1": "Male",
             "2": "Female",
@@ -41,12 +41,12 @@ def _gender(ecds: pd.DataFrame) -> pd.DataFrame:
         }
     )
 
-    return ecds
+    return df
 
 
-def _ethnos(ecds: pd.DataFrame) -> pd.DataFrame:
+def _ethnos(df: pd.DataFrame) -> pd.DataFrame:
 
-    ecds["ethnos_cat"] = ecds.ethnos.rename(
+    df["ethnos_cat"] = df.ethnos.rename(
         {
             "A": "White",
             "B": "White",
@@ -68,20 +68,20 @@ def _ethnos(ecds: pd.DataFrame) -> pd.DataFrame:
             "99": "Not known",
         }
     )
-    return ecds
+    return df
 
 
-def _townsend(ecds: pd.DataFrame) -> pd.DataFrame:
+def _townsend(df: pd.DataFrame) -> pd.DataFrame:
     # Data spec variable: townsend_score_decile (2011 UK Townsend Deprivation Scores - Dataset - UK Data Service CKAN)
 
-    ecds["townsend_score_quintile"] = (ecds.townsend_score_decile + 1) // 2
-    ecds.townsend_score_quintile = ecds.townsend_score_quintile.replace({0: np.nan})
+    df["townsend_score_quintile"] = (df.townsend_score_decile + 1) // 2
+    df.townsend_score_quintile = df.townsend_score_quintile.replace({0: np.nan})
 
-    return ecds
+    return df
 
 
-def _accomondationstatus(ecds: pd.DataFrame) -> pd.DataFrame:
-    ecds["accommodationstatus_cat"] = ecds.accommodationstatus.replace(
+def _accomondationstatus(df: pd.DataFrame) -> pd.DataFrame:
+    df["accommodationstatus_cat"] = df.accommodationstatus.replace(
         {
             0: np.nan,
             1064831000000106: "Unknown",
@@ -96,11 +96,11 @@ def _accomondationstatus(ecds: pd.DataFrame) -> pd.DataFrame:
             414418009: "No",
         }
     )
-    return ecds
+    return df
 
 
-def _edarivalemode(ecds: pd.DataFrame) -> pd.DataFrame:
-    ecds["edarrivalmode_cat"] = ecds.edarrivalmode.replace(
+def _edarivalemode(df: pd.DataFrame) -> pd.DataFrame:
+    df["edarrivalmode_cat"] = df.edarrivalmode.replace(
         {
             0: np.nan,
             1048061000000105: "Walk-In",
@@ -115,11 +115,11 @@ def _edarivalemode(ecds: pd.DataFrame) -> pd.DataFrame:
         }
     )
 
-    return ecds
+    return df
 
 
-def _edattendsource(ecds: pd.DataFrame) -> pd.DataFrame:
-    ecds["edattendsource_cat"] = ecds.edattendsource.replace(
+def _edattendsource(df: pd.DataFrame) -> pd.DataFrame:
+    df["edattendsource_cat"] = df.edattendsource.replace(
         {
             0: np.nan,
             1052681000000105: "Community",
@@ -157,11 +157,11 @@ def _edattendsource(ecds: pd.DataFrame) -> pd.DataFrame:
         }
     )
 
-    return ecds
+    return df
 
 
-def _edacuity(ecds: pd.DataFrame) -> pd.DataFrame:
-    ecds["edacuity_cat"] = ecds.edacuity.replace(
+def _edacuity(df: pd.DataFrame) -> pd.DataFrame:
+    df["edacuity_cat"] = df.edacuity.replace(
         {
             0: np.nan,
             1064891000000107: "1 - Immediate care level emergency care",
@@ -171,14 +171,14 @@ def _edacuity(ecds: pd.DataFrame) -> pd.DataFrame:
             1077251000000100: "5 - Low acuity level emergency care",
         }
     )
-    return ecds
+    return df
 
 
 # edinvest
 
 
-def _edinvest(ecds: pd.DataFrame) -> pd.DataFrame:
-    cols = ecds.filter(regex="edinvest_[0-9]{2}$").columns
+def _edinvest(df: pd.DataFrame) -> pd.DataFrame:
+    cols = df.filter(regex="edinvest_[0-9]{2}$").columns
     replacements = {
         0: np.nan,
         1088291000000101: np.nan,
@@ -191,18 +191,16 @@ def _edinvest(ecds: pd.DataFrame) -> pd.DataFrame:
 
         # if value is in replacements, keep the value, else use 'Urgent' for all others
         # then use replacements to assign the other categories
-        ecds[col + "_cat"] = (
-            ecds[col]
-            .where(ecds[col].isin(replacements), "Urgent")
-            .replace(replacements)
+        df[col + "_cat"] = (
+            df[col].where(df[col].isin(replacements), "Urgent").replace(replacements)
         )
 
-    return ecds
+    return df
 
 
-def _edtreat(ecds: pd.DataFrame) -> pd.DataFrame:
+def _edtreat(df: pd.DataFrame) -> pd.DataFrame:
     # edtreat
-    cols = ecds.filter(regex="edtreat_[0-9]{2}$").columns
+    cols = df.filter(regex="edtreat_[0-9]{2}$").columns
     replacements = {
         0: np.nan,
         183964008: np.nan,
@@ -214,16 +212,14 @@ def _edtreat(ecds: pd.DataFrame) -> pd.DataFrame:
 
         # if value is in replacements, keep the value, else use 'Urgent' for all others
         # then use replacements to assign the other categories
-        ecds[col + "_cat"] = (
-            ecds[col]
-            .where(ecds[col].isin(replacements), "Urgent")
-            .replace(replacements)
+        df[col + "_cat"] = (
+            df[col].where(df[col].isin(replacements), "Urgent").replace(replacements)
         )
 
-    return ecds
+    return df
 
 
-def _eddiag(ecds: pd.DataFrame) -> pd.DataFrame:
+def _eddiag(df: pd.DataFrame) -> pd.DataFrame:
     # Only use first diagnosis recorded (eddiag_01) to record seasonal diagnosis
     replacements = {
         0: np.nan,
@@ -248,17 +244,17 @@ def _eddiag(ecds: pd.DataFrame) -> pd.DataFrame:
 
     # if value is in replacements, keep the value, else use 'Urgent' for all others
     # then use replacements to assign the other categories
-    ecds["eddiag_seasonal_cat"] = ecds.eddiag_01.where(
-        ecds.eddiag_01.isin(replacements), np.nan
+    df["eddiag_seasonal_cat"] = df.eddiag_01.where(
+        df.eddiag_01.isin(replacements), np.nan
     ).replace(replacements)
 
-    return ecds
+    return df
 
 
-def _edattenddispatch(ecds: pd.DataFrame) -> pd.DataFrame:
+def _edattenddispatch(df: pd.DataFrame) -> pd.DataFrame:
     # Discharge Destination
 
-    ecds["edattenddispatch_cat"] = ecds.edattenddispatch.replace(
+    df["edattenddispatch_cat"] = df.edattenddispatch.replace(
         {
             0: np.nan,
             1066331000000109: "Ambulatory / Short Stay",
@@ -280,10 +276,10 @@ def _edattenddispatch(ecds: pd.DataFrame) -> pd.DataFrame:
             50861005: "Discharged",
         }
     )
-    return ecds
+    return df
 
 
-def _edrefservice(ecds: pd.DataFrame) -> pd.DataFrame:
+def _edrefservice(df: pd.DataFrame) -> pd.DataFrame:
 
     replacements = {
         0: np.nan,
@@ -361,8 +357,29 @@ def _edrefservice(ecds: pd.DataFrame) -> pd.DataFrame:
         898791000000105: "Medical",
         975951000000109: "Critical Care",
     }
-    ecds["edrefservice_cat"] = ecds.edrefservice.where(
-        ecds.edrefservice.isin(replacements), "Other"
+    df["edrefservice_cat"] = df.edrefservice.where(
+        df.edrefservice.isin(replacements), "Other"
     ).replace(replacements)
 
-    return ecds
+    return df
+
+
+def build_all(df: pd.DataFrame) -> pd.DataFrame:
+
+    df = (
+        df.pipe(_age)
+        .pipe(_accomondationstatus)
+        .pipe(_edacuity)
+        .pipe(_edarivalemode)
+        .pipe(_edattenddispatch)
+        .pipe(_edattendsource)
+        .pipe(_eddiag)
+        .pipe(_edinvest)
+        .pipe(_edrefservice)
+        .pipe(_edtreat)
+        .pipe(_ethnos)
+        .pipe(_gender)
+        .pipe(_townsend)
+    )
+
+    return df
