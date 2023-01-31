@@ -1,6 +1,6 @@
 gender = {
-    "url": "https://www.datadictionary.nhs.uk/data_elements/person_gender_code_current.html",
-    "mapping": {"0": "Not Known", "1": "Male", "2": "Female", "9": "Not Specified"},
+    "url": "https://www.datadictionary.nhs.uk/data_elements/person_stated_gender_code.html",
+    "mapping": {"X": "Not Known", "1": "Male", "2": "Female", "9": "Not Specified"},
 }
 
 ethnos = {

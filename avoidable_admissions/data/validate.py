@@ -75,9 +75,9 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
         nullable=True,
     )
 
-    length_of_stay: Series[float] = pa.Field(nullable=True)
+    length_of_stay: Series[float] = pa.Field(nullable=True, ge=0)
 
-    epiorder: Series[int] = pa.Field(nullable=True)
+    epiorder: Series[int] = pa.Field(nullable=True, ge=0)
 
     admiage: Series[float] = pa.Field(
         ge=18,
