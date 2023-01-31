@@ -80,7 +80,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     epiorder: Series[int] = pa.Field(nullable=True)
 
     admiage: Series[float] = pa.Field(
-        ge=0,
+        ge=18,
         le=130,
         nullable=True,
     )
@@ -178,7 +178,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
     )
     activage: Series[int] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/age_at_cds_activity_date.html",
-        ge=0,
+        ge=18,
         le=130,
         nullable=True,
     )
