@@ -39,7 +39,7 @@ def _townsend(df: pd.DataFrame) -> pd.DataFrame:
 def _accomondationstatus(df: pd.DataFrame) -> pd.DataFrame:
 
     df["accommodationstatus_cat"] = df.accommodationstatus.replace(
-        feature_maps.accomondationstatus
+        feature_maps.accomodationstatus
     )
     return df
 

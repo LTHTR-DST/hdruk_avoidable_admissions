@@ -11,18 +11,29 @@ from avoidable_admissions.features import feature_maps
 
 
 class AdmittedCareEpisodeSchema(pa.SchemaModel):
+    """Rules for validating the Admitted Care Episodes Data before feature engineering.
+
+    The dataset should be validated successfully against this schema before submitting to the
+    rest of the pipeline.
+    """
+
+    # visit_id is not part of the data spec but is used here as a unique row identifier
+    # Use `df["visit_id"] = df.reset_index(drop=True).index`
+
     visit_id: Series[int] = pa.Field(nullable=False, unique=True)
+
+    # Ensure this has been pseudonymised appropriately.
     patient_id: Series[int] = pa.Field(nullable=False)
 
     gender: Series[str] = pa.Field(
         description=nhsdd.gender["url"],
-        isin=list(nhsdd.gender["mapping"].keys()),
+        isin=list(feature_maps.gender),
         nullable=False,
     )
 
     ethnos: Series[str] = pa.Field(
         description=nhsdd.ethnos["url"],
-        isin=list(nhsdd.ethnos["mapping"].keys()),
+        isin=list(feature_maps.ethnos),
         nullable=False,
     )
 
@@ -51,7 +62,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
 
     admisorc: Series[str] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/admission_source__hospital_provider_spell_.html",
-        isin=list(nhsdd.admisorc["mapping"].keys()),
+        isin=list(feature_maps.admisorc),
         nullable=True,
     )
 
@@ -67,13 +78,13 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
 
     disdest: Series[str] = pa.Field(
         description=nhsdd.disdest["url"],
-        isin=list(nhsdd.disdest["mapping"].keys()),
+        isin=list(feature_maps.disdest),
         nullable=True,
     )
 
     dismeth: Series[str] = pa.Field(
         description=nhsdd.dismeth["url"],
-        isin=list(nhsdd.dismeth["mapping"].keys()),
+        isin=list(feature_maps.dismeth),
         nullable=True,
     )
 

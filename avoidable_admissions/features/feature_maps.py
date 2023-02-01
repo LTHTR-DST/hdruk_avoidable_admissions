@@ -51,7 +51,7 @@ ethnos = {
     "99": "Not known",
 }
 
-accomondationstatus = {
+accomodationstatus = {
     0: np.nan,
     1064831000000106: "Unknown",
     1064841000000102: "Unknown",
@@ -63,19 +63,6 @@ accomondationstatus = {
     32911000: "No",
     394923006: "No",
     414418009: "No",
-}
-
-accomondationstatus = {
-    0: np.nan,
-    1048061000000105: "Walk-In",
-    1048071000000103: "Walk-In",
-    2018310000: "Ambulance",
-    2018350000: "Ambulance",
-    2018370000: "Ambulance",
-    2018510000: "Ambulance",
-    2018550000: "Other",
-    2018810000: "Other",
-    2018910000: "Other",
 }
 
 edarrivalmode = {
@@ -275,12 +262,16 @@ edrefservice = {
 admisorc = {
     "19": "Residence",
     "29": "Residence",
+    "37": "Penal",  # CDS V6-3
     "39": "Penal",
+    "40": "Penal",  # CDS V6-3
     "49": "Medical care",
     "51": "Medical care",
     "52": "Medical care",
     "53": "Medical care",
     "54": "Care Home",
+    "55": "Care Home",  # CDS V6-3
+    "56": "Care Home",  # CDS V6-3
     "65": "Care Home",
     "66": "Residence",
     "79": "Residence",
@@ -330,36 +321,36 @@ admdiag_seasonal_4char = {
 }
 
 disdest = {
-    19: "Residence",
-    29: "Residence",
-    30: "Medical care",
-    37: "Penal",
-    38: "Penal",
-    39: "Penal",
-    48: "Medical care",
-    49: "Medical care",
-    50: "Medical care",
-    51: "Medical care",
-    52: "Medical care",
-    53: "Medical care",
-    54: "Care Home",
-    65: "Care Home",
-    66: "Residence",
-    79: "Died",
-    84: "Medical care",
-    85: "Care Home",
-    87: "Medical care",
-    88: "Care Home",
-    98: "Unknown",
-    99: "Unknown",
+    "19": "Residence",
+    "29": "Residence",
+    "30": "Medical care",
+    "37": "Penal",
+    "38": "Penal",
+    "39": "Penal",
+    "48": "Medical care",
+    "49": "Medical care",
+    "50": "Medical care",
+    "51": "Medical care",
+    "52": "Medical care",
+    "53": "Medical care",
+    "54": "Care Home",
+    "65": "Care Home",
+    "66": "Residence",
+    "79": "Died",
+    "84": "Medical care",
+    "85": "Care Home",
+    "87": "Medical care",
+    "88": "Care Home",
+    "98": "Unknown",
+    "99": "Unknown",
 }
 
 dismeth = {
-    1: "Discharged",
-    2: "Discharged",
-    3: "Discharged",
-    4: "Died",
-    5: "Died",
-    8: "Not Applicable",
-    9: "Unknown",
+    "1": "Discharged",
+    "2": "Discharged",
+    "3": "Discharged",
+    "4": "Died",
+    "5": "Died",
+    "8": "Not Applicable",
+    "9": "Unknown",
 }

@@ -38,7 +38,7 @@ def _townsend(df: pd.DataFrame) -> pd.DataFrame:
 
 def _admisorc(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["admisorc_cat"] = df.admisorc.replace(feature_maps.admisorc)
+    df["admisorc_cat"] = df.admisorc.astype(str).replace(feature_maps.admisorc)
     return df
 
 
@@ -94,14 +94,14 @@ def _length_of_stay(df: pd.DataFrame) -> pd.DataFrame:
 
 def _disdest(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["disdest_cat"] = df.disdest.replace(feature_maps.disdest)
+    df["disdest_cat"] = df.disdest.astype(str).replace(feature_maps.disdest)
 
     return df
 
 
 def _dismeth(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["dismeth_cat"] = df.dismeth.replace(feature_maps.dismeth)
+    df["dismeth_cat"] = df.dismeth.astype(str).replace(feature_maps.dismeth)
 
     return df
 
