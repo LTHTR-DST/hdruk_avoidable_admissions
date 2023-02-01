@@ -1,3 +1,4 @@
+import warnings
 from datetime import date, datetime
 from typing import Tuple
 
@@ -6,6 +7,7 @@ import pandera as pa
 from pandera.typing import Series
 
 from avoidable_admissions.data import nhsdd
+from avoidable_admissions.features import feature_maps
 
 
 class AdmittedCareEpisodeSchema(pa.SchemaModel):
@@ -60,7 +62,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     )
 
     admitime: Series[str] = pa.Field(
-        str_matches="2[0-3]|[01]?[0-9]:[0-5][0-9]", nullable=True, coerce=True
+        nullable=True, str_matches="2[0-3]|[01]?[0-9]:[0-5][0-9]", coerce=True
     )
 
     disdest: Series[str] = pa.Field(
@@ -105,6 +107,66 @@ AdmittedCareEpisodeSchema = AdmittedCareEpisodeSchema.to_schema().add_columns(
             datetime,
             nullable=True,
             regex=True,
+        ),
+    }
+)
+
+
+# Schema for validating Admitted Care Data Set after feature engineering
+AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_columns(
+    {
+        "admiage_cat": pa.Column(
+            str, nullable=False, checks=[pa.Check.isin(feature_maps.age_labels)]
+        ),
+        "gender_cat": pa.Column(
+            str, nullable=False, checks=pa.Check.isin(set(feature_maps.gender.values()))
+        ),
+        "ethnos_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.ethnos.values()))],
+        ),
+        "townsend_score_quintile": pa.Column(
+            nullable=True, checks=[pa.Check.in_range(min_value=1, max_value=5)]
+        ),
+        "admisorc_cat": pa.Column(
+            nullable=True, checks=[pa.Check.isin(set(feature_maps.admisorc.values()))]
+        ),
+        "admidayofweek": pa.Column(
+            nullable=True,
+            checks=[
+                pa.Check.isin(
+                    [
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday",
+                        "Sunday",
+                    ]
+                )
+            ],
+        ),
+        "diag_seasonal_cat": pa.Column(
+            nullable=True,
+            checks=[
+                pa.Check.isin(
+                    [
+                        "Respiratory infection",
+                        "Chronic disease exacerbation",
+                    ]
+                )
+            ],
+        ),
+        "length_of_stay_cat": pa.Column(
+            nullable=True, checks=[pa.Check.isin(["<2 days", ">=2 days"])]
+        ),
+        "disdest_cat": pa.Column(
+            nullable=True, checks=[pa.Check.isin(set(feature_maps.disdest.values()))]
+        ),
+        "dismeth_cat": pa.Column(
+            nullable=True, checks=[pa.Check.isin(set(feature_maps.dismeth.values()))]
         ),
     }
 )
@@ -250,6 +312,30 @@ EmergencyCareEpisodeSchema = EmergencyCareEpisodeSchema.to_schema().add_columns(
 )
 
 
+# Schema for validating Emergency Care Data Set after feature engineering
+EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_columns(
+    {
+        "activage_cat": pa.Column(),
+        "gender_cat": pa.Column(),
+        "ethnos_cat": pa.Column(),
+        "townsend_score_quintile": pa.Column(),
+        "accommodationstatus_cat": pa.Column(),
+        "edarrivalmode_cat": pa.Column(),
+        "edattendsource_cat": pa.Column(),
+        "edacuity_cat": pa.Column(),
+        "edinvest_[0-9]{2}_cat": pa.Column(
+            regex=True,
+        ),
+        "edtreat_[0-9]{2}_cat": pa.Column(
+            regex=True,
+        ),
+        "eddiag_seasonal_cat": pa.Column(),
+        "edattenddispatch_cat": pa.Column(),
+        "edrefservice_cat": pa.Column(),
+    }
+)
+
+
 def _validate_dataframe(
     df: pd.DataFrame, schema: pa.SchemaModel
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -262,7 +348,9 @@ def _validate_dataframe(
     try:
         # Capture all errors
         # https://pandera.readthedocs.io/en/stable/lazy_validation.html
-        schema.validate(df, lazy=True)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            schema.validate(df, lazy=True)
     except pa.errors.SchemaErrors as ex:
 
         print(ex.args[0])
@@ -296,3 +384,15 @@ def validate_admitted_care_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.Data
 
 def validate_emergency_care_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     return _validate_dataframe(df, EmergencyCareEpisodeSchema)
+
+
+def validate_admitted_care_features(
+    df: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    return _validate_dataframe(df, AdmittedCareFeatureSchema)
+
+
+def validate_emergency_care_features(
+    df: pd.DataFrame,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    return _validate_dataframe(df, EmergencyCareFeatureSchema)

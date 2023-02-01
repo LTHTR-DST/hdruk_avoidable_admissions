@@ -9,7 +9,7 @@ def _age(df: pd.DataFrame) -> pd.DataFrame:
     age_labels = feature_maps.age_labels
     age_bins = feature_maps.age_bins
 
-    df["admiage"] = pd.cut(df.admiage, bins=age_bins, labels=age_labels)
+    df["admiage_cat"] = pd.cut(df.admiage, bins=age_bins, labels=age_labels)
 
     return df
 
@@ -23,7 +23,7 @@ def _gender(df: pd.DataFrame) -> pd.DataFrame:
 
 def _ethnos(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["ethnos_cat"] = df.ethnos.rename(feature_maps.ethnos)
+    df["ethnos_cat"] = df.ethnos.replace(feature_maps.ethnos)
     return df
 
 
