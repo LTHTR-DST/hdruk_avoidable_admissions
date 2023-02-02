@@ -1,4 +1,8 @@
+from functools import lru_cache
+from typing import Dict
+
 import numpy as np
+import pandas as pd
 
 age_labels = [
     "<20",
@@ -354,3 +358,22 @@ dismeth = {
     "8": "Not Applicable",
     "9": "Unknown",
 }
+
+
+@lru_cache(maxsize=1)
+def load_apc_acsc_mapping() -> Dict[str, str]:
+    """Download ICD10 to Ambulatory Care Sensitive Conditions mapping from Sheffield Google Docs
+    and return a dictionary of icd10_code:acsc_name
+    """
+
+    # TODO: Store this file locally and hit Google Docs only if there is no local file.
+
+    sheet_id = "1M3uS6qh3d9OY31gFxy8858ZxBiFjGE_Y"  # APC - ACSC V1 20230130
+    sheet_name = "Sheet1"
+    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
+    acsc = pd.read_csv(url, usecols=[0, 1])
+    acsc.columns = acsc.columns.str.lower().str.replace("[^a-z0-9]+", "_", regex=True)
+    acsc.icd10_code = acsc.icd10_code.str.replace(".", "", regex=False)
+    acsc_mapping = acsc.set_index("icd10_code").aec_clinical_conditions.to_dict()
+
+    return acsc_mapping

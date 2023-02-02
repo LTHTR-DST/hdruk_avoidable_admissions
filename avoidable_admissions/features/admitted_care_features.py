@@ -106,6 +106,19 @@ def _dismeth(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _acsc_code(df: pd.DataFrame) -> pd.DataFrame:
+
+    # TODO: This section needs manual review of a good sample size to ensure it works
+
+    acsc_mapping = feature_maps.load_apc_acsc_mapping()
+    df["diag_01_acsc"] = df.diag_01.replace(acsc_mapping)
+    df.diag_01_acsc = df.diag_01_acsc.where(
+        df.diag_01_acsc.isin(set(acsc_mapping.values())), np.nan
+    )
+
+    return df
+
+
 def build_all(df: pd.DataFrame) -> pd.DataFrame:
 
     df = (
@@ -119,6 +132,7 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(_length_of_stay)
         .pipe(_disdest)
         .pipe(_dismeth)
+        .pipe(_acsc_code)
     )
 
     return df

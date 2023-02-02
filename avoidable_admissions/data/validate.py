@@ -179,6 +179,10 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
         "dismeth_cat": pa.Column(
             nullable=True, checks=[pa.Check.isin(set(feature_maps.dismeth.values()))]
         ),
+        "diag_01_acsc": pa.Column(
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.load_apc_acsc_mapping().values()))],
+        ),
     }
 )
 
