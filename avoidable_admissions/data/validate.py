@@ -183,6 +183,7 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
             nullable=True,
             checks=[pa.Check.isin(set(feature_maps.load_apc_acsc_mapping().values()))],
         ),
+        "opertn_count": pa.Column(int, nullable=False, checks=pa.Check.ge(0)),
     }
 )
 

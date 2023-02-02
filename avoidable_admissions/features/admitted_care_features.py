@@ -119,6 +119,34 @@ def _acsc_code(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _procedures(df: pd.DataFrame) -> pd.DataFrame:
+    """Using primary and all secondary procedure codes, categorise as follows to determine
+    whether a patient had any procedures or not:
+
+    No:
+        - = No procedures performed
+    Count:
+        4an = Procedure code
+
+    Missing:
+        & = Not known
+        X998 = Procedure carried out but no appropriate OPCS-4 code available (submitted value present between 1997-98 and 2005-07)
+        X999 = No procedure carried out (submitted value present between 1997-98 and 2001-02)"""
+    # TODO: Clarify how the X99* codes need to be dealt with. These codes do not appear in LTH data.
+
+    # 1. Filter all operation columns (01-12).
+    # 2. Use regex to replace X998, X999 and O, Y and Z codes (these indicate anatomy, site or method of operation  )
+    # 3. Count number of non-null values across each row
+
+    # opertn_count should be >=0
+
+    df["opertn_count"] = (
+        df.filter(regex="opertn_[0-1][0-9]$")
+        .replace({"X99[8-9]|[OYZ][0-9]+|\-": np.nan}, regex=True)
+        .count(axis=1)
+    )
+
+
 def build_all(df: pd.DataFrame) -> pd.DataFrame:
 
     df = (
