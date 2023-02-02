@@ -161,6 +161,7 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(_disdest)
         .pipe(_dismeth)
         .pipe(_acsc_code)
+        .pipe(_procedures)
     )
 
     return df
