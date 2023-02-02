@@ -146,6 +146,8 @@ def _procedures(df: pd.DataFrame) -> pd.DataFrame:
         .count(axis=1)
     )
 
+    return df
+
 
 def build_all(df: pd.DataFrame) -> pd.DataFrame:
 
