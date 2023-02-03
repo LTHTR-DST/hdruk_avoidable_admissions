@@ -1,8 +1,19 @@
 site_name: HDRUK Avoidable avoidable_admissions
-theme: readthedocs
+theme: material
 plugins:
 - search
 - mkdocstrings
+- autorefs
 nav:
 - Home: index.md
-- Validate: validate.md
+- Analysis Pipeline: pipeline.md
+- Data Validation: validation.md
+# - Validation Schema: schema.md
+- Feature Engineering: features.md
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          # format: !!python/name:pymdownx.superfences.fence_code_format

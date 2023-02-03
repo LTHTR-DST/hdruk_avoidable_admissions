@@ -11,10 +11,8 @@ from avoidable_admissions.features import feature_maps
 
 
 class AdmittedCareEpisodeSchema(pa.SchemaModel):
-    """Rules for validating the Admitted Care Episodes Data before feature engineering.
-
-    The dataset should be validated successfully against this schema before submitting to the
-    rest of the pipeline.
+    """Rules for validating the Admitted Care Episodes Data _before_ feature engineering.
+    The dataset should be validated successfully against this schema before feature engineering.
     """
 
     # visit_id is not part of the data spec but is used here as a unique row identifier
@@ -102,24 +100,26 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
         coerce = True
 
 
-AdmittedCareEpisodeSchema = AdmittedCareEpisodeSchema.to_schema().add_columns(
-    {
-        "diag_[0-9]{2}": pa.Column(
-            str,
-            nullable=True,
-            regex=True,
-        ),
-        "opertn_[0-9]{2}": pa.Column(
-            str,
-            nullable=True,
-            regex=True,
-        ),
-        "opdate_[0-9]{2}": pa.Column(
-            datetime,
-            nullable=True,
-            regex=True,
-        ),
-    }
+AdmittedCareEpisodeSchema: pa.DataFrameSchema = (
+    AdmittedCareEpisodeSchema.to_schema().add_columns(
+        {
+            "diag_[0-9]{2}": pa.Column(
+                str,
+                nullable=True,
+                regex=True,
+            ),
+            "opertn_[0-9]{2}": pa.Column(
+                str,
+                nullable=True,
+                regex=True,
+            ),
+            "opdate_[0-9]{2}": pa.Column(
+                datetime,
+                nullable=True,
+                regex=True,
+            ),
+        }
+    )
 )
 
 
@@ -186,6 +186,13 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
         "opertn_count": pa.Column(int, nullable=False, checks=pa.Check.ge(0)),
     }
 )
+
+AdmittedCareFeatureSchema.__dict__[
+    "_description"
+] = """Rules for validating the Admitted Care Features Data _after_ feature engineering.
+This dataset should have all the information from the raw data set as well as additional generated features.
+The dataset should be validated successfully against this schema before analysis and modelling.
+    """
 
 
 class EmergencyCareEpisodeSchema(pa.SchemaModel):
@@ -286,33 +293,33 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         coerce = True
 
 
-EmergencyCareEpisodeSchema = EmergencyCareEpisodeSchema.to_schema().add_columns(
+EmergencyCareEpisodeSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.to_schema().add_columns(
     {
-        "edcomorb_[0-9]{2}": pa.Column(
+        "edcomorb_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/comorbidity__snomed_ct_.html",
             dtype=int,
             nullable=True,
             regex=True,
         ),
-        "eddiag_[0-9]{2}": pa.Column(
+        "eddiag_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis__snomed_ct_.html",
             dtype=int,
             nullable=True,
             regex=True,
         ),
-        "edentryseq_[0-9]{2}": pa.Column(
+        "edentryseq_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/coded_clinical_entry_sequence_number.html",
             dtype=int,
             nullable=True,
             regex=True,
         ),
-        "eddiag_[0-9]{2}": pa.Column(
+        "eddiagqual_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis_qualifier__snomed_ct_.html",
             dtype=int,
             nullable=True,
             regex=True,
         ),
-        "edinvest_[0-9]{2}": pa.Column(
+        "edinvest_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_clinical_investigation__snomed_ct_.html",
             dtype=int,
             nullable=True,
@@ -352,9 +359,77 @@ EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_
 )
 
 
-def _validate_dataframe(
+def validate_dataframe(
     df: pd.DataFrame, schema: pa.SchemaModel
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """Validates data against a specified schema.
+
+    The data should have been prepared as per the specification set by the lead site.
+    Use the output of this function to iteratively identify and address data quality issues.
+
+    The following schema are defined:
+
+    Admitted Care Data:
+
+    - AdmittedCareEpisodeSchema
+    - AdmittedCareFeatureSchema
+
+    Emergency Care Data:
+
+    - EmergencyCareEpisodeSchema
+    - EmergencyCareFeatureSchema
+
+    See __[source code](https://github.com/LTHTR-DST/hdruk_avoidable_admissions/blob/dev/avoidable_admissions/data/validate.py)__
+    for validation rules.
+
+    Returns a _good_ dataframe containing rows that passed validation and
+    a _bad_ dataframe with rows that failed validation.
+    The _bad_ dataframe has additional columns that provide information on failure cause(s).
+    If there is a column error (misspelt, missing or additional), all rows will be returned in _bad_ dataframe.
+
+    Args:
+        df (pandas.DataFrame): Dataframe to be validated
+        schema (pa.SchemaModel): Pandera schema to validate against
+
+    Returns:
+        _Good_ and _Bad_ dataframes. See example below.
+
+
+
+    ## Validation Example:
+
+    ``` python
+    import avoidable_admissions as aa
+
+
+    df = pd.read_csv('path/to/data.csv')
+    good, bad = aa.data.validate.validate_dataframe(df, aa.data.validate.AdmittedCareEpisodeSchema)
+
+    ```
+
+    If `df` had rows that fail validation, the function will print an output similar to below.
+
+        Schema AdmittedCareEpisodeSchema: A total of 1 schema errors were found.
+
+        Error Counts
+        ------------
+        - schema_component_check: 1
+
+        Schema Error Summary
+        --------------------
+                                                            failure_cases  n_failure_cases
+        schema_context column  check
+        Column         admiage greater_than_or_equal_to(18)        [17.0]                1
+
+    This message indicates that there was a validation error in the `admiage` column which expects values >=18.
+
+    Fix data quality iteratively to ensure there are no errors.
+
+    If you find a bug in the validation code, and correct data fails validation, please raise a
+    [GitHub issue](https://github.com/LTHTR-DST/hdruk_avoidable_admissions/issues).
+
+    """
+
     df_errors = pd.DataFrame()
 
     # todo: document this behaviour to warn user that index will be dropped.
@@ -395,20 +470,37 @@ def _validate_dataframe(
 
 
 def validate_admitted_care_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    return _validate_dataframe(df, AdmittedCareEpisodeSchema)
+    """Convenience wrapper for `validate_dataframe(df, AdmittedCareEpisodeSchema)`
+
+    See [avoidable_admissions.data.validate.validate_dataframe][] for usage.
+    """
+
+    return validate_dataframe(df, AdmittedCareEpisodeSchema)
 
 
 def validate_emergency_care_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    return _validate_dataframe(df, EmergencyCareEpisodeSchema)
+    """Convenience wrapper for `validate_dataframe(df, EmergencyCareEpisodeSchema)`
+
+    See [avoidable_admissions.data.validate.validate_dataframe][] for usage.
+    """
+    return validate_dataframe(df, EmergencyCareEpisodeSchema)
 
 
 def validate_admitted_care_features(
     df: pd.DataFrame,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    return _validate_dataframe(df, AdmittedCareFeatureSchema)
+    """Convenience wrapper for `validate_dataframe(df, AdmittedCareFeatureSchema)`
+
+    See [avoidable_admissions.data.validate.validate_dataframe][] for usage.
+    """
+    return validate_dataframe(df, AdmittedCareFeatureSchema)
 
 
 def validate_emergency_care_features(
     df: pd.DataFrame,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    return _validate_dataframe(df, EmergencyCareFeatureSchema)
+    """Convenience wrapper for `validate_dataframe(df, EmergencyCareFeatureSchema)`
+
+    See [avoidable_admissions.data.validate.validate_dataframe][] for usage.
+    """
+    return validate_dataframe(df, EmergencyCareFeatureSchema)
