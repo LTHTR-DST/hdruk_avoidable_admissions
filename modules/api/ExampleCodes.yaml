@@ -1,0 +1,31 @@
+map_source_codes:
+  - code: 37796009
+    system: 'http://snomed.info/sct'
+  - code: 59927004
+    system: 'http://snomed.info/sct'
+  - code: 128241005
+    system: 'http://snomed.info/sct'
+  - code: 328383001
+    system: 'http://snomed.info/sct'
+  - code: 25924004
+    system: 'http://snomed.info/sct'
+  - code: 193031009
+    system: 'http://snomed.info/sct'
+  - code: 30093007
+    system: 'http://snomed.info/sct'
+  - code: 398057008
+    system: 'http://snomed.info/sct'
+  - code: 76581006
+    system: 'http://snomed.info/sct'
+  - code: 271737000
+    system: 'http://snomed.info/sct'
+  - code: 389026000
+    system: 'http://snomed.info/sct'
+  - code: 367363000
+    system: 'http://snomed.info/sct'
+  - code: 128045006
+    system: 'http://snomed.info/sct'
+  - code: 37796009
+    system: 'http://snomed.info/sct'
+  - code: 271737000
+    system: 'http://snomed.info/sct'

@@ -6,30 +6,31 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python>=3.11
   - black
-  - bokeh=2.4.*
+  - bokeh
   - bs4
-  - holoviews=1.15.*
+  - holoviews
   - html5lib
   - isort
   - jupyterlab
   - jupyterlab_code_formatter
   - lxml
-  - mkdocs
-  - mkdocstrings>=0.20
-  - mkdocstrings-python
   - nbstripout
   - pandas
-  # - pandas-profiling>=3.6 # Does not work with Python 3.11. See Readme.md
+  - pandas-profiling
   - pandera
   - pip
   - pre-commit
   - python-dotenv
+  - python=3.10
   - seaborn
-  # Uncomment these lines and update environment as analytics advances
-  # - scikit-learn
-  # - scipy
-  # - statsmodels
+  - scikit-learn
+  - scipy
+  - statsmodels
+  - ipykernel
+  - xlsxwriter
+  - openpyxl
+  - cx_Oracle
+  - requests_cache
   - pip:
       - -e .
