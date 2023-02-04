@@ -1,7 +1,9 @@
 import warnings
+from contextlib import nullcontext
 from datetime import date, datetime
 from typing import Tuple
 
+import numpy as np
 import pandas as pd
 import pandera as pa
 from pandera.typing import Series
@@ -18,10 +20,10 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     # visit_id is not part of the data spec but is used here as a unique row identifier
     # Use `df["visit_id"] = df.reset_index(drop=True).index`
 
-    visit_id: Series[int] = pa.Field(nullable=False, unique=True)
+    visit_id: Series[np.int64] = pa.Field(nullable=False, unique=True)
 
     # Ensure this has been pseudonymised appropriately.
-    patient_id: Series[int] = pa.Field(nullable=False)
+    patient_id: Series[np.int64] = pa.Field(nullable=False)
 
     gender: Series[str] = pa.Field(
         description=nhsdd.gender["url"],
@@ -96,6 +98,12 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
         nullable=True,
     )
 
+    # Include regex columns here to ensure at least the first one exists
+
+    diag_01: Series[str] = pa.Field(nullable=True)
+    opertn_01: Series[str] = pa.Field(nullable=True)
+    opdate_01: Series[datetime] = pa.Field(nullable=True)
+
     class Config:
         coerce = True
 
@@ -122,6 +130,8 @@ AdmittedCareEpisodeSchema: pa.DataFrameSchema = (
     )
 )
 
+# This picks up extra columns that should not be in the dataframe
+AdmittedCareEpisodeSchema.strict = True
 
 # Schema for validating Admitted Care Data Set after feature engineering
 AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_columns(
@@ -130,7 +140,9 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
             str, nullable=False, checks=[pa.Check.isin(feature_maps.age_labels)]
         ),
         "gender_cat": pa.Column(
-            str, nullable=False, checks=pa.Check.isin(set(feature_maps.gender.values()))
+            str,
+            nullable=False,
+            checks=[pa.Check.isin(set(feature_maps.gender.values()))],
         ),
         "ethnos_cat": pa.Column(
             str,
@@ -180,12 +192,18 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
             nullable=True, checks=[pa.Check.isin(set(feature_maps.dismeth.values()))]
         ),
         "diag_01_acsc": pa.Column(
-            nullable=True,
-            checks=[pa.Check.isin(set(feature_maps.load_apc_acsc_mapping().values()))],
+            # nullable=True,
+            checks=[
+                pa.Check.isin(
+                    set(feature_maps.load_apc_acsc_mapping().values()), ignore_na=True
+                )
+            ],
         ),
-        "opertn_count": pa.Column(int, nullable=False, checks=pa.Check.ge(0)),
+        "opertn_count": pa.Column(int, nullable=False, checks=[pa.Check.ge(0)]),
     }
 )
+
+AdmittedCareFeatureSchema.strict = True
 
 AdmittedCareFeatureSchema.__dict__[
     "_description"
@@ -197,9 +215,9 @@ The dataset should be validated successfully against this schema before analysis
 
 class EmergencyCareEpisodeSchema(pa.SchemaModel):
 
-    visit_id: Series[int] = pa.Field(nullable=False)
+    visit_id: Series[np.int64] = pa.Field(nullable=False)
 
-    patient_id: Series[int] = pa.Field(nullable=False)
+    patient_id: Series[np.int64] = pa.Field(nullable=False)
 
     gender: Series[str] = pa.Field(
         description=nhsdd.gender["url"],
@@ -220,7 +238,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         nullable=True,
     )
 
-    accommodationstatus: Series[int] = pa.Field(
+    accommodationstatus: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/accommodation_status__snomed_ct_.html",
         nullable=True,
     )
@@ -241,7 +259,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         nullable=False,
     )
 
-    edarrivalmode: Series[int] = pa.Field(
+    edarrivalmode: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_arrival_mode__snomed_ct_.html",
         nullable=False,
     )
@@ -251,7 +269,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         isin=list(nhsdd.edattendcat["mapping"].keys()),
         nullable=True,
     )
-    edattendsource: Series[int] = pa.Field(
+    edattendsource: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_attendance_source__snomed_ct_.html",
         nullable=True,
     )
@@ -260,6 +278,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         ge=datetime(year=2021, month=10, day=1),
         le=datetime(year=2022, month=9, day=30),
         nullable=True,
+        coerce=True,
     )
     activage: Series[int] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/age_at_cds_activity_date.html",
@@ -267,96 +286,168 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         le=130,
         nullable=True,
     )
-    edacuity: Series[int] = pa.Field(
+    edacuity: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_acuity__snomed_ct_.html",
         nullable=True,
     )
-    edchiefcomplaint: Series[int] = pa.Field(
+    edchiefcomplaint: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_chief_complaint__snomed_ct_.html",
         nullable=True,
     )
 
-    timeined: Series[str] = pa.Field(
+    timeined: Series[int] = pa.Field(
         description="Derived from Departure Date and Departure Time",
         nullable=True,
     )
-    edattenddispatch: Series[int] = pa.Field(
+    edattenddispatch: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_discharge_destination__snomed_ct_.html",
         nullable=True,
     )
-    edrefservice: Series[int] = pa.Field(
+    edrefservice: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/referred_to_service__snomed_ct_.html",
         nullable=True,
     )
 
+    edcomorb_01: Series[np.int64] = pa.Field(nullable=True)
+    eddiag_01: Series[np.int64] = pa.Field(nullable=True)
+    edentryseq_01: Series[int] = pa.Field(nullable=True)
+    eddiagqual_01: Series[np.int64] = pa.Field(nullable=True)
+    edinvest_01: Series[np.int64] = pa.Field(nullable=True)
+    edtreat_01: Series[np.int64] = pa.Field(nullable=True)
+
     class Config:
-        coerce = True
+        coerce = False
 
 
 EmergencyCareEpisodeSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.to_schema().add_columns(
     {
         "edcomorb_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/comorbidity__snomed_ct_.html",
-            dtype=int,
+            dtype=np.int64,
             nullable=True,
             regex=True,
+            coerce=True,
         ),
         "eddiag_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis__snomed_ct_.html",
-            dtype=int,
+            dtype=np.int64,
             nullable=True,
             regex=True,
+            coerce=True,
         ),
         "edentryseq_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/coded_clinical_entry_sequence_number.html",
             dtype=int,
             nullable=True,
             regex=True,
+            coerce=True,
         ),
         "eddiagqual_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis_qualifier__snomed_ct_.html",
-            dtype=int,
+            dtype=np.int64,
             nullable=True,
             regex=True,
+            coerce=True,
         ),
         "edinvest_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_clinical_investigation__snomed_ct_.html",
-            dtype=int,
+            dtype=np.int64,
             nullable=True,
             regex=True,
+            coerce=True,
         ),
         "edtreat_[0-9]{2}": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_procedure__snomed_ct_.html",
-            dtype=int,
+            dtype=np.int64,
             nullable=True,
             regex=True,
+            coerce=True,
         ),
     }
 )
 
+# Picks up columns not in schema
+EmergencyCareEpisodeSchema.strict = True
 
 # Schema for validating Emergency Care Data Set after feature engineering
 EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_columns(
     {
-        "activage_cat": pa.Column(),
-        "gender_cat": pa.Column(),
-        "ethnos_cat": pa.Column(),
-        "townsend_score_quintile": pa.Column(),
-        "accommodationstatus_cat": pa.Column(),
-        "edarrivalmode_cat": pa.Column(),
-        "edattendsource_cat": pa.Column(),
-        "edacuity_cat": pa.Column(),
+        "activage_cat": pa.Column(
+            str, nullable=False, checks=[pa.Check.isin(feature_maps.age_labels)]
+        ),
+        "gender_cat": pa.Column(
+            str,
+            nullable=False,
+            checks=[pa.Check.isin(set(feature_maps.gender.values()))],
+        ),
+        "ethnos_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.ethnos.values()))],
+        ),
+        "townsend_score_quintile": pa.Column(
+            nullable=True, checks=[pa.Check.in_range(min_value=1, max_value=5)]
+        ),
+        "accommodationstatus_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.accomodationstatus.values()))],
+        ),
+        "edarrivalmode_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.edarrivalmode.values()))],
+        ),
+        "edattendsource_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.edattendsource.values()))],
+        ),
+        "edacuity_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.edacuity.values()))],
+        ),
+        # Ensures at least _01 is present
+        "edinvest_01_cat": pa.Column(str, nullable=True),
+        "edtreat_01_cat": pa.Column(str, nullable=True),
         "edinvest_[0-9]{2}_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.edinvest.values()))],
             regex=True,
         ),
         "edtreat_[0-9]{2}_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.edtreat.values()))],
             regex=True,
         ),
-        "eddiag_seasonal_cat": pa.Column(),
-        "edattenddispatch_cat": pa.Column(),
-        "edrefservice_cat": pa.Column(),
+        "eddiag_seasonal_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.eddiag_seasonal.values()))],
+        ),
+        "eddiagqual_01_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.eddiagqual.values()))],
+        ),
+        "edattenddispatch_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.edattenddispatch.values()))],
+        ),
+        "edrefservice_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.edrefservice.values()))],
+        ),
     }
 )
+
+# Picks up columns not in schema
+EmergencyCareFeatureSchema.strict = True
 
 
 def validate_dataframe(
