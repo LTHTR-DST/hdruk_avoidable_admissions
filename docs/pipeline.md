@@ -49,15 +49,15 @@ flowchart TB
     style Feature_Engineering fill: #fff
     style Analysis fill: #fff
 
-    click B "/validation/#avoidable_admissions.data.validate.validate_admitted_care_data"
-    click F "/validation/#avoidable_admissions.data.validate.validate_admitted_care_features"
+    click B "/hdruk_avoidable_admissions/validation/#avoidable_admissions.data.validate.validate_admitted_care_data"
+    click F "/hdruk_avoidable_admissions/validation/#avoidable_admissions.data.validate.validate_admitted_care_features"
 
-    click C "/validation/#avoidable_admissions.data.validate.validate_dataframe--validation-example"
-    click G "/validation/#avoidable_admissions.data.validate.validate_dataframe--validation-example"
+    click C "/hdruk_avoidable_admissions/validation/#avoidable_admissions.data.validate.validate_dataframe--validation-example"
+    click G "/hdruk_avoidable_admissions/validation/#avoidable_admissions.data.validate.validate_dataframe--validation-example"
 
 
-    click E "/features/#avoidable_admissions.features.build_features.build_admitted_care_features"
+    click E "/hdruk_avoidable_admissions/features/#avoidable_admissions.features.build_features.build_admitted_care_features"
 
-    click D "validation/#fixing-errors"
+    click D "/hdruk_avoidable_admissions/validation/#fixing-errors"
 
 ```

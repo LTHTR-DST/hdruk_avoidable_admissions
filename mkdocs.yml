@@ -1,5 +1,14 @@
-site_name: HDRUK Avoidable avoidable_admissions
-theme: material
+site_name: HDRUK Avoidable Admissions
+site_url: https://lthtr-dst.github.io/hdruk_avoidable_admissions/
+repo_url: https://github.com/lthtr-dst/hdruk_avoidable_admissions
+repo_name: GitHub
+site_description: >
+  [HDRUK](https://www.hdruk.ac.uk/) Data Science Collaboration on Avoidable Admissions in the NHS.
+  Led by [School for Health and Related Research](https://www.sheffield.ac.uk/scharr) as Sheffield University.
+site_author: https://github.com/lthtr-dst/
+theme:
+  name: material
+  logo: logo.png
 plugins:
 - search
 - mkdocstrings
