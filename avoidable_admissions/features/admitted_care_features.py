@@ -16,7 +16,7 @@ def _age(df: pd.DataFrame) -> pd.DataFrame:
 
 def _gender(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["gender_cat"] = df.gender.astype(str).replace(feature_maps.gender)
+    df["gender_cat"] = df.gender.replace(feature_maps.gender)
 
     return df
 
@@ -31,14 +31,13 @@ def _townsend(df: pd.DataFrame) -> pd.DataFrame:
     # Data spec variable: townsend_score_decile (2011 UK Townsend Deprivation Scores - Dataset - UK Data Service CKAN)
 
     df["townsend_score_quintile"] = (df.townsend_score_decile + 1) // 2
-    df.townsend_score_quintile = df.townsend_score_quintile.replace({0: np.nan})
 
     return df
 
 
 def _admisorc(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["admisorc_cat"] = df.admisorc.astype(str).replace(feature_maps.admisorc)
+    df["admisorc_cat"] = df.admisorc.replace(feature_maps.admisorc)
     return df
 
 
@@ -71,10 +70,10 @@ def _diag_seasonal(df: pd.DataFrame) -> pd.DataFrame:
         df.diag_01.replace(replacement_4char).str.slice(0, 3).replace(replacement_3char)
     )
 
-    # If the final values are not in allowed_categories, replace with nan.
+    # If the final values are not in allowed_categories, replace with "-".
     df.diag_seasonal_cat = df.diag_seasonal_cat.where(
         df.diag_seasonal_cat.isin(allowed_categories),
-        np.nan,
+        "-",
     )
 
     return df
@@ -94,14 +93,14 @@ def _length_of_stay(df: pd.DataFrame) -> pd.DataFrame:
 
 def _disdest(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["disdest_cat"] = df.disdest.astype(str).replace(feature_maps.disdest)
+    df["disdest_cat"] = df.disdest.replace(feature_maps.disdest)
 
     return df
 
 
 def _dismeth(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["dismeth_cat"] = df.dismeth.astype(str).replace(feature_maps.dismeth)
+    df["dismeth_cat"] = df.dismeth.replace(feature_maps.dismeth)
 
     return df
 
@@ -113,7 +112,7 @@ def _acsc_code(df: pd.DataFrame) -> pd.DataFrame:
     acsc_mapping = feature_maps.load_apc_acsc_mapping()
     df["diag_01_acsc"] = df.diag_01.replace(acsc_mapping)
     df.diag_01_acsc = df.diag_01_acsc.where(
-        df.diag_01_acsc.isin(set(acsc_mapping.values())), np.nan
+        df.diag_01_acsc.isin(set(acsc_mapping.values())), "-"
     )
 
     return df
@@ -131,7 +130,8 @@ def _procedures(df: pd.DataFrame) -> pd.DataFrame:
     Missing:
         & = Not known
         X998 = Procedure carried out but no appropriate OPCS-4 code available (submitted value present between 1997-98 and 2005-07)
-        X999 = No procedure carried out (submitted value present between 1997-98 and 2001-02)"""
+        X999 = No procedure carried out (submitted value present between 1997-98 and 2001-02)
+
     # TODO: Clarify how the X99* codes need to be dealt with. These codes do not appear in LTH data.
 
     # 1. Filter all operation columns (01-12).
@@ -139,6 +139,8 @@ def _procedures(df: pd.DataFrame) -> pd.DataFrame:
     # 3. Count number of non-null values across each row
 
     # opertn_count should be >=0
+    """
+    # TODO: Instead of replacing invalid codes with nan, should we count only valid OPCS codes
 
     df["opertn_count"] = (
         df.filter(regex="opertn_[0-1][0-9]$")

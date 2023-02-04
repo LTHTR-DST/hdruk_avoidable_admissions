@@ -51,7 +51,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
         description="https://statistics.ukdataservice.ac.uk/dataset/2011-uk-townsend-deprivation-scores",
         ge=0,  # fill missing values with 0 to pass validation.
         le=10,
-        nullable=True,
+        nullable=False,
     )
 
     admimeth: Series[str] = pa.Field(
@@ -92,10 +92,10 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
 
     epiorder: Series[int] = pa.Field(nullable=True, ge=0)
 
-    admiage: Series[float] = pa.Field(
+    admiage: Series[int] = pa.Field(
         ge=18,
         le=130,
-        nullable=True,
+        nullable=False,
     )
 
     # Include regex columns here to ensure at least the first one exists
@@ -105,7 +105,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     opdate_01: Series[datetime] = pa.Field(nullable=True)
 
     class Config:
-        coerce = True
+        coerce = False
 
 
 AdmittedCareEpisodeSchema: pa.DataFrameSchema = (
@@ -150,7 +150,7 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
             checks=[pa.Check.isin(set(feature_maps.ethnos.values()))],
         ),
         "townsend_score_quintile": pa.Column(
-            nullable=True, checks=[pa.Check.in_range(min_value=1, max_value=5)]
+            int, nullable=True, checks=[pa.Check.in_range(min_value=1, max_value=5)]
         ),
         "admisorc_cat": pa.Column(
             nullable=True, checks=[pa.Check.isin(set(feature_maps.admisorc.values()))]
@@ -175,10 +175,7 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
             nullable=True,
             checks=[
                 pa.Check.isin(
-                    [
-                        "Respiratory infection",
-                        "Chronic disease exacerbation",
-                    ]
+                    ["Respiratory infection", "Chronic disease exacerbation", "-"]
                 )
             ],
         ),
@@ -195,7 +192,8 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
             # nullable=True,
             checks=[
                 pa.Check.isin(
-                    set(feature_maps.load_apc_acsc_mapping().values()), ignore_na=True
+                    set([*feature_maps.load_apc_acsc_mapping().values(), "-"]),
+                    ignore_na=True,
                 )
             ],
         ),
@@ -386,7 +384,7 @@ EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_
             checks=[pa.Check.isin(set(feature_maps.ethnos.values()))],
         ),
         "townsend_score_quintile": pa.Column(
-            nullable=True, checks=[pa.Check.in_range(min_value=1, max_value=5)]
+            int, nullable=True, checks=[pa.Check.in_range(min_value=1, max_value=5)]
         ),
         "accommodationstatus_cat": pa.Column(
             str,
@@ -451,7 +449,7 @@ EmergencyCareFeatureSchema.strict = True
 
 
 def validate_dataframe(
-    df: pd.DataFrame, schema: pa.SchemaModel
+    df: pd.DataFrame, schema: pa.DataFrameSchema
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Validates data against a specified schema.
 
@@ -480,7 +478,7 @@ def validate_dataframe(
 
     Args:
         df (pandas.DataFrame): Dataframe to be validated
-        schema (pa.SchemaModel): Pandera schema to validate against
+        schema (pa.DataFrameSchema): Pandera schema to validate against
 
     Returns:
         _Good_ and _Bad_ dataframes. See example below.
@@ -558,6 +556,16 @@ def validate_dataframe(
 
         else:
             df = df[~df.index.isin(df_errors["index"])]
+    except Exception as ex:
+        # This is to catch all other errors.
+        print(ex.args[0])
+        print(
+            "No data will pass validation due to undefined error."
+            "See output above and please raise an issue on GitHub."
+        )
+
+        df = df.iloc[0:0]
+        df_errors = df.copy()
 
     finally:
         return df, df_errors
@@ -598,3 +606,32 @@ def validate_emergency_care_features(
     See [avoidable_admissions.data.validate.validate_dataframe][] for usage.
     """
     return validate_dataframe(df, EmergencyCareFeatureSchema)
+
+
+def get_schema_properties(schema: pa.DataFrameSchema) -> pd.DataFrame:
+    """Get detailed information about a validation schema including checks, dtypes, nullability and more.
+
+    Args:
+        schema (Pandera DataFrameSchema): One of `AdmittedCareEpisodeSchema`, `AdmittedCareFeatureSchema`,
+        `EmergencyCareEpisodeSchema`, `EmergencyCareFeatureSchema`
+
+    Returns:
+        pd.DataFrame: Dataframe containing schema properties.
+    """
+
+    df = pd.DataFrame([x.properties for x in schema.columns.values()])
+
+    columns = [
+        "name",
+        "dtype",
+        "nullable",
+        "unique",
+        "coerce",
+        "required",
+        "checks",
+        "regex",
+        "title",
+        "description",
+    ]
+
+    return df[columns]
