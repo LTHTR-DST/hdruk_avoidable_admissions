@@ -22,7 +22,7 @@ def _gender(df: pd.DataFrame) -> pd.DataFrame:
 
 def _ethnos(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["ethnos_cat"] = df.ethnos.rename(feature_maps.ethnos)
+    df["ethnos_cat"] = df.ethnos.replace(feature_maps.ethnos)
 
     return df
 
@@ -31,7 +31,6 @@ def _townsend(df: pd.DataFrame) -> pd.DataFrame:
     # Data spec variable: townsend_score_decile (2011 UK Townsend Deprivation Scores - Dataset - UK Data Service CKAN)
 
     df["townsend_score_quintile"] = (df.townsend_score_decile + 1) // 2
-    df.townsend_score_quintile = df.townsend_score_quintile.replace({0: np.nan})
 
     return df
 
@@ -63,9 +62,6 @@ def _edacuity(df: pd.DataFrame) -> pd.DataFrame:
     df["edacuity_cat"] = df.edacuity.replace(feature_maps.edacuity)
 
     return df
-
-
-# edinvest
 
 
 def _edinvest(df: pd.DataFrame) -> pd.DataFrame:
@@ -132,6 +128,18 @@ def _edrefservice(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _eddiagqual(df: pd.DataFrame) -> pd.DataFrame:
+    # Only applicable to eddiag_01
+    # This deviates from the spec by assigning nan to values not in the spec
+
+    replacements = feature_maps.eddiagqual
+    df["eddiagqual_01_cat"] = df.eddiagqual_01.where(
+        df.eddiagqual_01.isin(replacements), np.nan
+    ).replace(replacements)
+
+    return df
+
+
 def build_all(df: pd.DataFrame) -> pd.DataFrame:
 
     df = (
@@ -142,6 +150,7 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(_edattenddispatch)
         .pipe(_edattendsource)
         .pipe(_eddiag_seasonal)
+        .pipe(_eddiagqual)
         .pipe(_edinvest)
         .pipe(_edrefservice)
         .pipe(_edtreat)
