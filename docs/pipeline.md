@@ -33,21 +33,16 @@ flowchart TB
             G -->|No| I(Analysis)
         end
     end
-    style A fill:#eee,stroke:#526cfe,stroke-width:4px
-    style E fill:#eee,stroke:#526cfe,stroke-width:4px
-    style I fill:#eee,stroke:#526cfe,stroke-width:4px
+    style A stroke:#526cfe,stroke-width:4px
+    style E stroke:#526cfe,stroke-width:4px
+    style I stroke:#526cfe,stroke-width:4px
 
-    style B stroke: #26b079, stroke-width:4px
-    style F stroke: #26b079, stroke-width:4px
+    style B stroke:#26b079, stroke-width:4px
+    style F stroke:#26b079, stroke-width:4px
 
-    style D stroke: #ff7872
-    style H stroke: #ff7872
+    style D stroke:#ff7872
+    style H stroke:#ff7872
 
-
-    style Admitted_Care_Pipeline fill:#fff
-    style Preprocessing fill: #fff
-    style Feature_Engineering fill: #fff
-    style Analysis fill: #fff
 
     click B "/hdruk_avoidable_admissions/validation/#avoidable_admissions.data.validate.validate_admitted_care_data"
     click F "/hdruk_avoidable_admissions/validation/#avoidable_admissions.data.validate.validate_admitted_care_features"
