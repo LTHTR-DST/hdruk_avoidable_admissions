@@ -76,7 +76,7 @@ from avoidable_admissions.features.build_features import (
 
 
 # Load raw data typically extracted using SQL from source database
-df = pd.read_csv('../data/raw/admitted_care)
+df = pd.read_csv("../data/raw/admitted_care.csv")
 
 # First validation step using Episode Schema
 # Review, fix DQ issues and repeat this step until all data passes validation
