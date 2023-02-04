@@ -11,6 +11,7 @@ There are multiple schema defined for validation of different datasets at differ
             - validate_admitted_care_features
             - validate_emergency_care_data
             - validate_emergency_care_features
+            - get_schema_properties
         show_root_heading: false
 
 ## Fixing Errors
@@ -35,3 +36,16 @@ df['admidate'] = df['admidate'].dt.date
 # Else valiation will fail as nan is treated as float.
 df['accommodationstatus'] = df['accommodationstatus'].fillna(0)
 ```
+
+## Mising Values
+
+_To be finalised after further discussion and testing._
+
+There is an entire chapter in Pandas documentation on [missing values](https://pandas.pydata.org/pandas-docs/stable/user_guide/missing_data.html#) which is an important read for any data scientist.
+
+For the purposes of this project, several pragmatic choices have been made regarding how missing values are treated.
+
+1. Where a definition exists for how missing values should be coded, for instance in the NHS data model, use this.
+2. For SNOMED codes, which are always integers, use 0 (zero) to replace all missing values. This avoids validation errors caused by `NaN` values that are treated as `float` dtype by Pandas.
+3. For strings, use `"-"` (without the quotes) for missing values.
+4. During feature engineering, if a code has not been assigned a category in the specification, the value `"Other"` is assigned.
