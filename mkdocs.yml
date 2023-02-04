@@ -19,7 +19,8 @@ nav:
 - Data Validation: validation.md
 # - Validation Schema: schema.md
 - Feature Engineering: features.md
-
+watch:
+  - avoidable_admissions
 markdown_extensions:
   - pymdownx.superfences:
       custom_fences:

@@ -61,3 +61,41 @@ flowchart TB
     click D "/hdruk_avoidable_admissions/validation/#fixing-errors"
 
 ```
+
+## Complete Pipeline Example
+
+This is an example using the Admitted Care Dataset.
+The same principles apply for the Emergency Care Dataset.
+
+``` python
+
+import pandas as pd
+from avoidable_admissions.data.validate import (
+    validate_dataframe,
+    AdmittedCareEpisodeSchema,
+    AdmittedCareFeatureSchema
+)
+from avoidable_admissions.features.build_features import (
+    build_admitted_care_features
+)
+
+
+# Load raw data typically extracted using SQL from source database
+df = pd.read_csv('../data/raw/admitted_care)
+
+# First validation step using Episode Schema
+# Review, fix DQ issues and repeat this step until all data passes validation
+good, bad = validate_dataframe(df, AdmittedCareEpisodeSchema)
+
+# Feature engineering using the _good_ dataframe
+df_features = build_admitted_care_features(good)
+
+# Second validation step using Feature Schema
+# Review and fix DQ issues.
+# This may require returning to the first validation step or even extraction.
+good_f, bad_f = validate_dataframe(df, AdmittedCareFeatureSchema)
+
+# Use the good_f dataframe for analysis as required by lead site
+# TODO: Sample Jupyter Notebook for generating descriptive analytics
+
+```

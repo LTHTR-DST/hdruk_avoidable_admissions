@@ -371,13 +371,13 @@ def validate_dataframe(
 
     Admitted Care Data:
 
-    - AdmittedCareEpisodeSchema
-    - AdmittedCareFeatureSchema
+    - `AdmittedCareEpisodeSchema`
+    - `AdmittedCareFeatureSchema`
 
     Emergency Care Data:
 
-    - EmergencyCareEpisodeSchema
-    - EmergencyCareFeatureSchema
+    - `EmergencyCareEpisodeSchema`
+    - `EmergencyCareFeatureSchema`
 
     See __[source code](https://github.com/LTHTR-DST/hdruk_avoidable_admissions/blob/dev/avoidable_admissions/data/validate.py)__
     for validation rules.
@@ -399,11 +399,14 @@ def validate_dataframe(
     ## Validation Example:
 
     ``` python
-    import avoidable_admissions as aa
+    from avoidable_admissions.data.validate import (
+        validate_dataframe,
+        AdmittedCareEpisodeSchema
+    )
 
 
     df = pd.read_csv('path/to/data.csv')
-    good, bad = aa.data.validate.validate_dataframe(df, aa.data.validate.AdmittedCareEpisodeSchema)
+    good, bad = validate_dataframe(df, AdmittedCareEpisodeSchema)
 
     ```
 
