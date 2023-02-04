@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 
 age_labels = [
-    "<20",
+    "18-19",
     "20 - 24",
     "25 - 29",
     "30 - 34",
@@ -22,7 +22,7 @@ age_labels = [
     ">85",
 ]
 
-age_bins = age_bins = [0, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 999]
+age_bins = age_bins = [17, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 130]
 
 
 gender = {
@@ -163,6 +163,11 @@ eddiag_seasonal = {
     62994001: "Respiratory infection",
     80384002: "Respiratory infection",
     90176007: "Respiratory infection",
+}
+
+eddiagqual = {
+    415684004: "Suspected",
+    410605003: "Confirmed",
 }
 
 edattenddispatch = {
