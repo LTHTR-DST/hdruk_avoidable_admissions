@@ -6,7 +6,69 @@ HDRUK Data Science Collaboration on Avoidable Admissions in the NHS.
 
 Please see <https://mattstammers.github.io/hdruk_avoidable_admissions_collaboration_docs/> for more information.
 
-## Project Setup
+## Installation
+
+For contributing to this repo, please see [Development Setup](#development-setup) section below.
+
+This section is to use this package within an existing setup.
+A separate virtual environment is recommended.
+
+The package maybe installed directly from GitHub using one of the following commands:
+
+To install only the package:
+
+`pip install "avoidable_admissions @ git+https://github.com/LTHTR-DST/hdruk_avoidable_admissions.git@<release-name>"`
+
+To install with optional dependencies for _exploratory data analysis_:
+
+`pip install "avoidable_admissions[eda] @ git+https://github.com/LTHTR-DST/hdruk_avoidable_admissions.git@<release-name>"`
+
+To install with optional dependecies for _contributing to development and documentation_:
+
+`pip install "avoidable_admissions[dev] @ git+https://github.com/LTHTR-DST/hdruk_avoidable_admissions.git@<release-name>"`
+
+Replace `<release-name>` with the latest release version e.g. `v.0.1.0-alpha`.
+Omit `<release-name>` to install the latest code in the repo.
+
+List of releases can be found here - <https://github.com/LTHTR-DST/hdruk_avoidable_admissions/releases>.
+
+### Quickstart
+
+See <https://lthtr-dst.github.io/hdruk_avoidable_admissions/> for detailed instructions.
+
+```python
+import pandas as pd
+from avoidable_admissions.data.validate import (
+    validate_dataframe,
+    AdmittedCareEpisodeSchema,
+    AdmittedCareFeatureSchema
+)
+from avoidable_admissions.features.build_features import (
+    build_admitted_care_features
+)
+
+
+# Load raw data typically extracted using SQL from source database
+df = pd.read_csv("../data/raw/admitted_care.csv")
+
+# First validation step using Episode Schema
+# Review, fix DQ issues and repeat this step until all data passes validation
+good, bad = validate_dataframe(df, AdmittedCareEpisodeSchema)
+
+# Feature engineering using the _good_ dataframe
+df_features = build_admitted_care_features(good)
+
+# Second validation step using Feature Schema
+# Review and fix DQ issues.
+# This may require returning to the first validation step or even extraction.
+good_f, bad_f = validate_dataframe(df, AdmittedCareFeatureSchema)
+
+# Use the good_f dataframe for analysis as required by lead site
+```
+
+See <https://lthtr-dst.github.io/hdruk_avoidable_admissions/admitted_care_pipeline_example> for a complete example.
+
+## Development Setup
 
 The project setup is based on an opinionated [cookiecutter datascience project](https://drivendata.github.io/cookiecutter-data-science/) template.
 There are a few additional components to ease development and facilitate a collaborative workspace.
@@ -17,6 +79,7 @@ Before setting this project up, the following requirements need to be met:
 - Anaconda or Miniconda installed and access to the Anaconda Powershell prompt
 - Mamba (`conda install mamba -n base`)
 - Git
+- Fork and clone this repo
 
 ### Steps
 
