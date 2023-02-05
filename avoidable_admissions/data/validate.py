@@ -150,7 +150,7 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
             checks=[pa.Check.isin(set(feature_maps.ethnos.values()))],
         ),
         "townsend_score_quintile": pa.Column(
-            int, nullable=True, checks=[pa.Check.in_range(min_value=1, max_value=5)]
+            int, nullable=True, checks=[pa.Check.in_range(min_value=0, max_value=5)]
         ),
         "admisorc_cat": pa.Column(
             nullable=True, checks=[pa.Check.isin(set(feature_maps.admisorc.values()))]
@@ -384,7 +384,7 @@ EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_
             checks=[pa.Check.isin(set(feature_maps.ethnos.values()))],
         ),
         "townsend_score_quintile": pa.Column(
-            int, nullable=True, checks=[pa.Check.in_range(min_value=1, max_value=5)]
+            int, nullable=True, checks=[pa.Check.in_range(min_value=0, max_value=5)]
         ),
         "accommodationstatus_cat": pa.Column(
             str,
