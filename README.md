@@ -10,29 +10,21 @@ Please see <https://mattstammers.github.io/hdruk_avoidable_admissions_collaborat
 
 For contributing to this repo, please see [Development Setup](#development-setup) section below.
 
-This section is to use this package within an existing setup.
+The following describes installation of the package within an existing environment.
 A separate virtual environment is recommended.
 
-The package maybe installed directly from GitHub using one of the following commands:
-
-To install only the package:
+The package maybe installed directly from GitHub using one the following command:
 
 `pip install "avoidable_admissions @ git+https://github.com/LTHTR-DST/hdruk_avoidable_admissions.git@<release-name>"`
 
-To install with optional dependencies for _exploratory data analysis_:
-
-`pip install "avoidable_admissions[eda] @ git+https://github.com/LTHTR-DST/hdruk_avoidable_admissions.git@<release-name>"`
-
-To install with optional dependecies for _contributing to development and documentation_:
-
-`pip install "avoidable_admissions[dev] @ git+https://github.com/LTHTR-DST/hdruk_avoidable_admissions.git@<release-name>"`
+Additional installation options are described in the [documentation](https://lthtr-dst.github.io/hdruk_avoidable_admissions/).
 
 Replace `<release-name>` with the latest release version e.g. `v.0.1.0-alpha`.
 Omit `<release-name>` to install the latest code in the repo.
 
 List of releases can be found here - <https://github.com/LTHTR-DST/hdruk_avoidable_admissions/releases>.
 
-### Quickstart
+## Quickstart
 
 See <https://lthtr-dst.github.io/hdruk_avoidable_admissions/> for detailed instructions.
 
