@@ -29,6 +29,7 @@ nav:
 - Data Validation: validation.md
 # - Validation Schema: schema.md
 - Feature Engineering: features.md
+- Pipeline Example: admitted_care_pipeline_example.md
 watch:
   - avoidable_admissions
 markdown_extensions:
