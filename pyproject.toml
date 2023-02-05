@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "avoidable_admissions"
+description = "HDRUK Collaboration on Avoidable Admissions in the NHS"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [
+    { name = "LTHTR Data Science Team", email = "datascience@lthtr.nhs.uk" },
+]
+dependencies = ["pandas", "pandera", "python-dotenv"]
+dynamic = ["version"]
+
+[tool.setuptools]
+packages = ["avoidable_admissions"]
+
+[tool.setuptools.dynamic]
+version = {attr = "avoidable_admissions.VERSION"}
+
+[project.urls]
+Homepage = "https://github.com/LTHTR-DST/hdruk_avoidable_admissions/"
+Documentation = "https://lthtr-dst.github.io/hdruk_avoidable_admissions/"
+
+[project.optional-dependencies]
+eda = [
+    "black",
+    "bokeh",
+    "holoviews",
+    "isort",
+    "jupyterlab_code_formatter",
+    "jupyterlab",
+    "seaborn",
+]
+dev = [
+    "mkdocs-material",
+    "mkdocs",
+    "mkdocstrings-python",
+    "mkdocstrings",
+    "nbstripout",
+    "pre-commit",
+]
+
+[tool.isort]
+profile = "black"
