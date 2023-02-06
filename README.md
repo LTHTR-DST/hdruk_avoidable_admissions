@@ -13,9 +13,11 @@ For contributing to this repo, please see [Development Setup](#development-setup
 The following describes installation of the package within an existing environment.
 A separate virtual environment is recommended.
 
-The package maybe installed directly from GitHub using one the following command:
+The package maybe installed directly from GitHub.
 
-`pip install "avoidable_admissions @ git+https://github.com/LTHTR-DST/hdruk_avoidable_admissions.git@<release-name>"`
+```shell
+pip install "avoidable_admissions @ git+https://github.com/LTHTR-DST/hdruk_avoidable_admissions.git@<release-name>"
+```
 
 Additional installation options are described in the [documentation](https://lthtr-dst.github.io/hdruk_avoidable_admissions/).
 
@@ -26,7 +28,7 @@ List of releases can be found here - <https://github.com/LTHTR-DST/hdruk_avoidab
 
 ## Quickstart
 
-See <https://lthtr-dst.github.io/hdruk_avoidable_admissions/> for detailed instructions.
+Detailed instructions are available in the [documentation](https://lthtr-dst.github.io/hdruk_avoidable_admissions/) including a [complete pipeline example](https://lthtr-dst.github.io/hdruk_avoidable_admissions/admitted_care_pipeline_example).
 
 ```python
 import pandas as pd
@@ -57,8 +59,6 @@ good_f, bad_f = validate_dataframe(df, AdmittedCareFeatureSchema)
 
 # Use the good_f dataframe for analysis as required by lead site
 ```
-
-See <https://lthtr-dst.github.io/hdruk_avoidable_admissions/admitted_care_pipeline_example> for a complete example.
 
 ## Development Setup
 
