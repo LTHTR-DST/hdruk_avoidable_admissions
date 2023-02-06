@@ -28,7 +28,7 @@ theme:
     - navigation.tabs.sticky
     - navigation.top
     - toc.follow
-    - toc.integrate
+    # - toc.integrate
 plugins:
 - search
 - mkdocstrings
