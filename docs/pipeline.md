@@ -57,12 +57,12 @@ flowchart TB
 
 ```
 
-## Complete Pipeline Example
+## Pipeline Example
 
 This is an example using the Admitted Care Dataset.
 The same principles apply for the Emergency Care Dataset.
 
-``` python
+```python
 
 import pandas as pd
 from avoidable_admissions.data.validate import (
@@ -91,6 +91,6 @@ df_features = build_admitted_care_features(good)
 good_f, bad_f = validate_dataframe(df, AdmittedCareFeatureSchema)
 
 # Use the good_f dataframe for analysis as required by lead site
-# TODO: Sample Jupyter Notebook for generating descriptive analytics
-
 ```
+
+Please see [Pipeline Example](https://lthtr-dst.github.io/hdruk_avoidable_admissions/admitted_care_pipeline_example/) for a more detailed Jupyter notebook.

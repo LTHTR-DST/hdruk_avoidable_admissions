@@ -19,6 +19,16 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
+  features:
+    - content.code.copy
+    - navigation.expand
+    - navigation.path
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - toc.follow
+    - toc.integrate
 plugins:
 - search
 - mkdocstrings
@@ -29,7 +39,7 @@ nav:
 - Data Validation: validation.md
 # - Validation Schema: schema.md
 - Feature Engineering: features.md
-- Pipeline Example: admitted_care_pipeline_example.md
+- Complete Pipeline: admitted_care_pipeline_example.md
 watch:
   - avoidable_admissions
 markdown_extensions:
