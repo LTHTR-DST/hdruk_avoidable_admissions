@@ -99,7 +99,7 @@ def _eddiag_seasonal(df: pd.DataFrame) -> pd.DataFrame:
     # Only use first diagnosis recorded (eddiag_01) to record seasonal diagnosis
     replacements = feature_maps.eddiag_seasonal
 
-    # if value is in replacements, keep the value, else use 'Urgent' for all others
+    # if value is in replacements, keep the value, else use 'nan' for all others
     # then use replacements to assign the other categories
     df["eddiag_seasonal_cat"] = df.eddiag_01.where(
         df.eddiag_01.isin(replacements), np.nan
@@ -139,6 +139,18 @@ def _eddiagqual(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+def _acsc_code(df: pd.DataFrame) -> pd.DataFrame:
+
+    # TODO: This section needs manual review of a good sample size to ensure it works
+
+    acsc_mapping = feature_maps.load_ed_acsc_mapping()
+    df["eddiag_01_acsc"] = df.eddiag_01.replace(acsc_mapping)
+    df.eddiag_01_acsc = df.eddiag_01_acsc.where(
+        df.eddiag_01_acsc.isin(set(acsc_mapping.values())), "-"
+    )
+
+    return df
+
 
 def build_all(df: pd.DataFrame) -> pd.DataFrame:
 
@@ -157,6 +169,7 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(_ethnos)
         .pipe(_gender)
         .pipe(_townsend)
+        .pipe(_acsc_code)
     )
 
     return df

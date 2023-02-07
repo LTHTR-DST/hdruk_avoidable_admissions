@@ -12,12 +12,10 @@ Check git diff to ensure everything looks good. The script will also print to st
 import json
 import re
 import sys
-
 import black
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
-
 from avoidable_admissions.data.validate import EmergencyCareEpisodeSchema
 
 
@@ -77,11 +75,12 @@ def generate_nhsdd_snomed():
     - edarrivalmode: [EMERGENCY_CARE_ARRIVAL_MODE](https://www.datadictionary.nhs.uk/data_elements/emergency_care_arrival_mode__snomed_ct_.html)
     - edattendsource: [EMERGENCY_CARE_ATTENDANCE_SOURCE](https://www.datadictionary.nhs.uk/data_elements/emergency_care_attendance_source__snomed_ct_.html)
     - edacuity: [EMERGENCY_CARE_ACUITY](https://www.datadictionary.nhs.uk/data_elements/emergency_care_acuity__snomed_ct_.html)
-    - edcheifcomplaint: [EMERGENCY_CARE_CHIEF_COMPLAINT](https://www.datadictionary.nhs.uk/data_elements/emergency_care_chief_complaint__snomed_ct_.html)
+    - edchiefcomplaint: [EMERGENCY_CARE_CHIEF_COMPLAINT](https://www.datadictionary.nhs.uk/data_elements/emergency_care_chief_complaint__snomed_ct_.html)
     - edattenddispatch: [EMERGENCY_CARE_DISCHARGE_DESTINATION](https://www.datadictionary.nhs.uk/data_elements/emergency_care_discharge_destination__snomed_ct_.html)
     - edrefservice: [REFERRED_TO_SERVICE](https://www.datadictionary.nhs.uk/data_elements/referred_to_service__snomed_ct_.html)
     - edcomorb: [COMORBIDITY](https://www.datadictionary.nhs.uk/data_elements/comorbidity__snomed_ct_.html)
-    - eddiag: [EMERGENCY_CARE_DIAGNOSIS_QUALIFIER](https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis_qualifier__snomed_ct_.html)
+    - eddiagqual: [EMERGENCY_CARE_DIAGNOSIS_QUALIFIER](https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis_qualifier__snomed_ct_.html)
+    - eddiag: [EMERGENCY_CARE_DIAGNOSIS](https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis__snomed_ct_.html)
     - edinvest: [EMERGENCY_CARE_CLINICAL_INVESTIGATION](https://www.datadictionary.nhs.uk/data_elements/emergency_care_clinical_investigation__snomed_ct_.html)
     - edtreat: [EMERGENCY_CARE_PROCEDURE](https://www.datadictionary.nhs.uk/data_elements/emergency_care_procedure__snomed_ct_.html)
 
@@ -152,8 +151,8 @@ def generate_nhsdd_snomed():
 
 
 if __name__ == "__main__":
-    # generate_nhsdd()
-    # generate_nhsdd_snomed()
+    generate_nhsdd()
+    generate_nhsdd_snomed()
     if sys.argv[1] == "dd":
         print("Generating avoidable_admissions/data/nhsdd.py")
         generate_nhsdd()
@@ -163,6 +162,6 @@ if __name__ == "__main__":
     else:
         print(
             "Generating avoidable_admissions/data/nhsdd.py and avoidable_admissions/data/nhsdd_snomed.py"
-        )
+         )
         generate_nhsdd()
         generate_nhsdd_snomed()
