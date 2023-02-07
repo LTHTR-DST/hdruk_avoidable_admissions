@@ -8,7 +8,7 @@ import pandas as pd
 import pandera as pa
 from pandera.typing import Series
 
-from avoidable_admissions.data import nhsdd
+from avoidable_admissions.data import nhsdd, nhsdd_snomed
 from avoidable_admissions.features import feature_maps
 
 
@@ -23,7 +23,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     visit_id: Series[np.int64] = pa.Field(nullable=False, unique=True)
 
     # Ensure this has been pseudonymised appropriately.
-    patient_id: Series[np.int64] = pa.Field(nullable=False)
+    patient_id: Series[str] = pa.Field(nullable=False)
 
     gender: Series[str] = pa.Field(
         description=nhsdd.gender["url"],
@@ -215,7 +215,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
 
     visit_id: Series[np.int64] = pa.Field(nullable=False)
 
-    patient_id: Series[np.int64] = pa.Field(nullable=False)
+    patient_id: Series[str] = pa.Field(nullable=False)
 
     gender: Series[str] = pa.Field(
         description=nhsdd.gender["url"],
@@ -238,6 +238,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
 
     accommodationstatus: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/accommodation_status__snomed_ct_.html",
+        isin=list(nhsdd_snomed.accommodationstatus["members"]),
         nullable=True,
     )
 
@@ -259,6 +260,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
 
     edarrivalmode: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_arrival_mode__snomed_ct_.html",
+        isin=list(nhsdd_snomed.edarrivalmode["members"]),
         nullable=False,
     )
 
@@ -269,6 +271,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
     )
     edattendsource: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_attendance_source__snomed_ct_.html",
+        isin=list(nhsdd_snomed.edarrivalmode["members"]),
         nullable=True,
     )
     edarrivaldatetime: Series[datetime] = pa.Field(
@@ -290,6 +293,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
     )
     edchiefcomplaint: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_chief_complaint__snomed_ct_.html",
+        isin=list(nhsdd_snomed.edchiefcomplaint["members"]),
         nullable=True,
     )
 
@@ -299,10 +303,12 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
     )
     edattenddispatch: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_discharge_destination__snomed_ct_.html",
+        isin=list(nhsdd_snomed.edattenddispatch["members"]),
         nullable=True,
     )
     edrefservice: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/referred_to_service__snomed_ct_.html",
+        isin=list(nhsdd_snomed.edrefservice["members"]),
         nullable=True,
     )
 
@@ -325,6 +331,12 @@ EmergencyCareEpisodeSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.to_s
             nullable=True,
             regex=True,
             coerce=True,
+            checks=[
+                pa.Check.isin(
+                    set(nhsdd_snomed.edcomorb["members"]),
+                    ignore_na=True,
+                )
+            ],
         ),
         "eddiag_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_diagnosis__snomed_ct_.html",
@@ -332,6 +344,12 @@ EmergencyCareEpisodeSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.to_s
             nullable=True,
             regex=True,
             coerce=True,
+            checks=[
+                pa.Check.isin(
+                    set(nhsdd_snomed.eddiag["members"]),
+                    ignore_na=True,
+                )
+            ],
         ),
         "edentryseq_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/coded_clinical_entry_sequence_number.html",
@@ -353,6 +371,12 @@ EmergencyCareEpisodeSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.to_s
             nullable=True,
             regex=True,
             coerce=True,
+            checks=[
+                pa.Check.isin(
+                    set(nhsdd_snomed.edinvest["members"]),
+                    ignore_na=True,
+                )
+            ],
         ),
         "edtreat_[0-9]{2}": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_procedure__snomed_ct_.html",
@@ -360,6 +384,12 @@ EmergencyCareEpisodeSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.to_s
             nullable=True,
             regex=True,
             coerce=True,
+            checks=[
+                pa.Check.isin(
+                    set(nhsdd_snomed.edtreat["members"]),
+                    ignore_na=True,
+                )
+            ],
         ),
     }
 )
@@ -440,6 +470,15 @@ EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_
             str,
             nullable=True,
             checks=[pa.Check.isin(set(feature_maps.edrefservice.values()))],
+        ),
+        "eddiag_01_acsc": pa.Column(
+            # nullable=True,
+            checks=[
+                pa.Check.isin(
+                    set([*feature_maps.load_ed_acsc_mapping().values(), "-"]),
+                    ignore_na=True,
+                )
+            ],
         ),
     }
 )
