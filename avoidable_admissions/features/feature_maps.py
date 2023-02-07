@@ -382,3 +382,22 @@ def load_apc_acsc_mapping() -> Dict[str, str]:
     acsc_mapping = acsc.set_index("icd10_code").aec_clinical_conditions.to_dict()
 
     return acsc_mapping
+
+@lru_cache(maxsize=1)
+def load_ed_acsc_mapping() -> Dict[str, str]:
+    """Download SNOMED codes to Ambulatory Care Sensitive Conditions mapping from Sheffield Google Docs
+    and return a dictionary of snomed_code:acsc_name
+    """
+
+    # TODO: Store this file locally and hit Google Docs only if there is no local file.
+
+    sheet_id = "1Jsx4Am9a3Hvv7VJwIFb4z4_oV7zXL39e"  # ECDS - ACSC V5 20230130
+    sheet_name = "ACSC ECDS and ICD-10"
+    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
+    url = url.replace(" ", "%20")
+    acsc = pd.read_csv(url, usecols=[0, 11])
+    acsc.columns = acsc.columns.str.strip ()
+    acsc.columns = acsc.columns.str.lower().str.replace("[^a-z0-9]+", "_", regex=True)
+    acsc_mapping = acsc.set_index("snomed_code").aec_clinical_conditions.to_dict()
+
+    return acsc_mapping
