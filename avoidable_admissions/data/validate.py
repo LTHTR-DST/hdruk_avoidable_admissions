@@ -48,10 +48,10 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
         nullable=False,
     )
 
-    townsend_score_decile: Series[int] = pa.Field(
+    townsend_score_quintile: Series[int] = pa.Field(
         description="https://statistics.ukdataservice.ac.uk/dataset/2011-uk-townsend-deprivation-scores",
         ge=0,  # fill missing values with 0 to pass validation.
-        le=10,
+        le=5,
         nullable=False,
     )
 
@@ -150,9 +150,6 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
             nullable=True,
             checks=[pa.Check.isin(set(feature_maps.ethnos.values()))],
         ),
-        "townsend_score_quintile": pa.Column(
-            int, nullable=True, checks=[pa.Check.in_range(min_value=0, max_value=5)]
-        ),
         "admisorc_cat": pa.Column(
             nullable=True, checks=[pa.Check.isin(set(feature_maps.admisorc.values()))]
         ),
@@ -230,10 +227,10 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         nullable=False,
     )
 
-    townsend_score_decile: Series[int] = pa.Field(
+    townsend_score_quintile: Series[int] = pa.Field(
         description="https://statistics.ukdataservice.ac.uk/dataset/2011-uk-townsend-deprivation-scores",
         ge=0,  # fill missing values with 0 to pass validation.
-        le=10,
+        le=5,
         nullable=True,
     )
 
@@ -416,9 +413,6 @@ EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_
             str,
             nullable=True,
             checks=[pa.Check.isin(set(feature_maps.ethnos.values()))],
-        ),
-        "townsend_score_quintile": pa.Column(
-            int, nullable=True, checks=[pa.Check.in_range(min_value=0, max_value=5)]
         ),
         "accommodationstatus_cat": pa.Column(
             str,

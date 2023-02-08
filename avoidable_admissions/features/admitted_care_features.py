@@ -27,14 +27,6 @@ def _ethnos(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def _townsend(df: pd.DataFrame) -> pd.DataFrame:
-    # Data spec variable: townsend_score_decile (2011 UK Townsend Deprivation Scores - Dataset - UK Data Service CKAN)
-
-    df["townsend_score_quintile"] = (df.townsend_score_decile + 1) // 2
-
-    return df
-
-
 def _admisorc(df: pd.DataFrame) -> pd.DataFrame:
 
     df["admisorc_cat"] = df.admisorc.replace(feature_maps.admisorc)
@@ -157,7 +149,6 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         df.pipe(_age)
         .pipe(_gender)
         .pipe(_ethnos)
-        .pipe(_townsend)
         .pipe(_admisorc)
         .pipe(_admidate)
         .pipe(_diag_seasonal)

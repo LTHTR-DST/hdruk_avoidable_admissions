@@ -27,14 +27,6 @@ def _ethnos(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def _townsend(df: pd.DataFrame) -> pd.DataFrame:
-    # Data spec variable: townsend_score_decile (2011 UK Townsend Deprivation Scores - Dataset - UK Data Service CKAN)
-
-    df["townsend_score_quintile"] = (df.townsend_score_decile + 1) // 2
-
-    return df
-
-
 def _accomondationstatus(df: pd.DataFrame) -> pd.DataFrame:
 
     df["accommodationstatus_cat"] = df.accommodationstatus.replace(
@@ -139,6 +131,7 @@ def _eddiagqual(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+
 def _acsc_code(df: pd.DataFrame) -> pd.DataFrame:
 
     # TODO: This section needs manual review of a good sample size to ensure it works
@@ -168,7 +161,6 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(_edtreat)
         .pipe(_ethnos)
         .pipe(_gender)
-        .pipe(_townsend)
         .pipe(_acsc_code)
     )
 
