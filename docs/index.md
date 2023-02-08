@@ -4,7 +4,7 @@ This Python package is being developed as part of a federated multi-site collabo
 
 The study documentation is maintained at <https://mattstammers.github.io/hdruk_avoidable_admissions_collaboration_docs>.
 
-The code in this repository and its use are documented here.
+The `avoidable_admissions` Python package is documented here along with examples.
 
 ## Installation
 
