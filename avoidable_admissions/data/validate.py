@@ -73,7 +73,16 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     )
 
     admitime: Series[str] = pa.Field(
-        nullable=True, str_matches="2[0-3]|[01]?[0-9]:[0-5][0-9]", coerce=True
+        description="https://www.datadictionary.nhs.uk/data_elements/start_time__hospital_provider_spell_.html",
+        nullable=True,
+        str_matches="2[0-3]|[01]?[0-9]:[0-5][0-9]",
+        coerce=True,
+    )
+
+    disreadydays: Series[float] = pa.Field(
+        description="Derived from NHS Data Model DISCHARGE READY DATE and DISCHARGE DATE (HOSPITAL PROVIDER SPELL)",
+        nullable=True,
+        ge=0,
     )
 
     disdest: Series[str] = pa.Field(
