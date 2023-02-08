@@ -1,6 +1,7 @@
 import warnings
 from contextlib import nullcontext
 from datetime import date, datetime
+from tabnanny import check
 from typing import Tuple
 
 import numpy as np
@@ -491,7 +492,7 @@ EmergencyCareFeatureSchema.strict = True
 
 
 def validate_dataframe(
-    df: pd.DataFrame, schema: pa.DataFrameSchema
+    df: pd.DataFrame, schema: pa.DataFrameSchema, **kwargs
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Validates data against a specified schema.
 
@@ -521,10 +522,22 @@ def validate_dataframe(
     Args:
         df (pandas.DataFrame): Dataframe to be validated
         schema (pa.DataFrameSchema): Pandera schema to validate against
+        kwargs: The following keyword arguments are currently supported
+        start_date (datetime): Study start date (inclusive)
+        end_date (datetime): Study end date (inclusive)
+
 
     Returns:
         _Good_ and _Bad_ dataframes. See example below.
 
+    ## Customising Study Dates
+
+    As a default, the study dates specified in the initial protocol will be used (`admidate>=datetime(2021,11,1) and admidate<datetime(2022,11,1)`).
+    However, these can be altered by providing these as keyword arguments as shown in example below.
+
+    This validation rule will be applied to `admidate` in the Acute Admissions dataset and to `edarrivaldatetime` in the emergency care dataset as below.
+
+    `admidate>=start_date` and `admidate<end_date`. The `<` for end_date allows `admidate=31-10-2022 23:59:00` to pass validation.
 
 
     ## Validation Example:
@@ -538,6 +551,9 @@ def validate_dataframe(
 
     df = pd.read_csv('path/to/data.csv')
     good, bad = validate_dataframe(df, AdmittedCareEpisodeSchema)
+
+    # To use an alternative study period, specify the start_date and end_date parameters
+    good, bad = validate_dataframe(df, AdmittedCareEpisodeSchema, start_date=datetime(2019,1,1), end_date=datetime(2019,12,31))
 
     ```
 
@@ -569,6 +585,26 @@ def validate_dataframe(
     # todo: document this behaviour to warn user that index will be dropped.
     # alternatively find a way to set a unique key for each row - important for merging errors
     df = df.copy().reset_index(drop=True)
+
+    start_date = kwargs.get("start_date", datetime(2021, 11, 1))
+    end_date = kwargs.get("end_date", datetime(2022, 11, 1))
+
+    date_checks = [
+        pa.Check.ge(start_date),
+        pa.Check.lt(end_date),
+    ]
+
+    if schema.name.startswith("AdmittedCare"):
+        schema = schema.update_column(
+            column_name="admidate",
+            checks=date_checks,
+        )
+
+    elif schema.name.startswith("EmergencyCare"):
+
+        schema = schema.update_column(
+            column_name="edarrivaldatetime", checks=date_checks
+        )
 
     try:
         # Capture all errors
@@ -613,41 +649,45 @@ def validate_dataframe(
         return df, df_errors
 
 
-def validate_admitted_care_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def validate_admitted_care_data(
+    df: pd.DataFrame, **kwargs
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Convenience wrapper for `validate_dataframe(df, AdmittedCareEpisodeSchema)`
 
     See [avoidable_admissions.data.validate.validate_dataframe][] for usage.
     """
 
-    return validate_dataframe(df, AdmittedCareEpisodeSchema)
+    return validate_dataframe(df, AdmittedCareEpisodeSchema, **kwargs)
 
 
-def validate_emergency_care_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def validate_emergency_care_data(
+    df: pd.DataFrame, **kwargs
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Convenience wrapper for `validate_dataframe(df, EmergencyCareEpisodeSchema)`
 
     See [avoidable_admissions.data.validate.validate_dataframe][] for usage.
     """
-    return validate_dataframe(df, EmergencyCareEpisodeSchema)
+    return validate_dataframe(df, EmergencyCareEpisodeSchema, **kwargs)
 
 
 def validate_admitted_care_features(
-    df: pd.DataFrame,
+    df: pd.DataFrame, **kwargs
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Convenience wrapper for `validate_dataframe(df, AdmittedCareFeatureSchema)`
 
     See [avoidable_admissions.data.validate.validate_dataframe][] for usage.
     """
-    return validate_dataframe(df, AdmittedCareFeatureSchema)
+    return validate_dataframe(df, AdmittedCareFeatureSchema, **kwargs)
 
 
 def validate_emergency_care_features(
-    df: pd.DataFrame,
+    df: pd.DataFrame, **kwargs
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Convenience wrapper for `validate_dataframe(df, EmergencyCareFeatureSchema)`
 
     See [avoidable_admissions.data.validate.validate_dataframe][] for usage.
     """
-    return validate_dataframe(df, EmergencyCareFeatureSchema)
+    return validate_dataframe(df, EmergencyCareFeatureSchema, **kwargs)
 
 
 def get_schema_properties(schema: pa.DataFrameSchema) -> pd.DataFrame:
