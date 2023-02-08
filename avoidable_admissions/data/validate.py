@@ -293,10 +293,15 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         isin=[0, *nhsdd_snomed.edchiefcomplaint["members"]],
         nullable=True,
     )
-
-    timeined: Series[int] = pa.Field(
-        description="Derived from Departure Date and Departure Time",
+    edwaittime: Series[int] = pa.Field(
+        description="Derived from NHS Data Model EMERGENCY CARE DATE SEEN FOR TREATMENT and EMERGENCY CARE TIME SEEN FOR TREATMENT and edarrivaldatetime",
         nullable=True,
+        ge=0,
+    )
+    timeined: Series[int] = pa.Field(
+        description="Derived from NHS Data Model NHS Data Model EMERGENCY CARE DEPARTURE DATE and EMERGENCY CARE DEPARTURE TIME and edarrivaldatetime",
+        nullable=True,
+        ge=0,
     )
     edattenddispatch: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_discharge_destination__snomed_ct_.html",
@@ -306,6 +311,11 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
     edrefservice: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/referred_to_service__snomed_ct_.html",
         isin=list(feature_maps.edrefservice),
+        nullable=True,
+    )
+    disstatus: Series[np.int64] = pa.Field(
+        description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_discharge_status__snomed_ct_.html",
+        isin=list(feature_maps.disstatus),
         nullable=True,
     )
 
@@ -432,6 +442,11 @@ EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_
             str,
             nullable=True,
             checks=[pa.Check.isin(set(feature_maps.edacuity.values()))],
+        ),
+        "disstatus_cat": pa.Column(
+            str,
+            nullable=True,
+            checks=[pa.Check.isin(set(feature_maps.disstatus.values()))],
         ),
         # Ensures at least _01 is present
         "edinvest_01_cat": pa.Column(str, nullable=True),

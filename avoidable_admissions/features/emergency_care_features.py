@@ -145,11 +145,20 @@ def _acsc_code(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _disstatus(df: pd.DataFrame) -> pd.DataFrame:
+
+    df["disstatus_cat"] = df.disstatus.replace(feature_maps.disstatus)
+
+    return df
+
+
 def build_all(df: pd.DataFrame) -> pd.DataFrame:
 
     df = (
         df.pipe(_age)
         .pipe(_accomondationstatus)
+        .pipe(_acsc_code)
+        .pipe(_disstatus)
         .pipe(_edacuity)
         .pipe(_edarivalemode)
         .pipe(_edattenddispatch)
@@ -161,7 +170,6 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(_edtreat)
         .pipe(_ethnos)
         .pipe(_gender)
-        .pipe(_acsc_code)
     )
 
     return df

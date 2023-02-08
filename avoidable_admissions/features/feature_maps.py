@@ -270,6 +270,28 @@ edrefservice = {
     975951000000109: "Critical Care",
 }
 
+disstatus = {
+    0: np.nan,
+    1066301000000103: "Non-urgent",
+    1066311000000101: "Non-urgent",
+    1066321000000107: "Non-urgent",
+    1077021000000100: "Non-urgent",
+    1077031000000103: "Urgent",
+    1077041000000107: "Urgent",
+    1077051000000105: "Urgent",
+    1077061000000108: "Urgent",
+    1077071000000101: "Urgent",
+    1077081000000104: "Urgent",
+    1077091000000102: "Urgent",
+    1077101000000105: "Urgent",
+    1077781000000101: "Urgent",
+    1324201000000109: "Urgent",
+    182992009: "Non-urgent",
+    63238001: "Died",
+    75004002: "Died",
+}
+
+
 admisorc = {
     "19": "Residence",
     "29": "Residence",
