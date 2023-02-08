@@ -66,10 +66,10 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
         nullable=True,
     )
 
-    admidate: Series[date] = pa.Field(
-        ge=date(year=2021, month=10, day=1),
-        le=date(year=2022, month=9, day=30),
+    admidate: Series[datetime] = pa.Field(
+        description="https://www.datadictionary.nhs.uk/data_elements/start_date__hospital_provider_spell_.html",
         nullable=False,
+        coerce=True,
     )
 
     admitime: Series[str] = pa.Field(
@@ -273,8 +273,6 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
     )
     edarrivaldatetime: Series[datetime] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_arrival_date.html",
-        ge=datetime(year=2021, month=10, day=1),
-        le=datetime(year=2022, month=9, day=30),
         nullable=True,
         coerce=True,
     )
