@@ -12,10 +12,14 @@ theme:
   palette:
     # Palette toggle for dark mode
     - scheme: slate
+      primary: green
+      accent: green
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
     - scheme: default
+      primary: green
+      accent: green
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
