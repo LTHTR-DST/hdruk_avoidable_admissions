@@ -71,15 +71,15 @@ accomodationstatus = {
 
 edarrivalmode = {
     0: np.nan,
+    1047991000000102: "Sheffield-ToDo",
+    1048001000000106: "Sheffield-ToDo",
+    1048021000000102: "Sheffield-ToDo",
+    1048031000000100: "Sheffield-ToDo",
+    1048041000000109: "Sheffield-ToDo",
+    1048051000000107: "Sheffield-ToDo",
     1048061000000105: "Walk-In",
     1048071000000103: "Walk-In",
-    2018310000: "Ambulance",
-    2018350000: "Ambulance",
-    2018370000: "Ambulance",
-    2018510000: "Ambulance",
-    2018550000: "Other",
-    2018810000: "Other",
-    2018910000: "Other",
+    1048081000000101: "Sheffield-ToDo",
 }
 
 edattendsource = {
@@ -102,7 +102,9 @@ edattendsource = {
     1077211000000104: "Community",
     1077761000000105: "Community",
     1079521000000104: "Hospital",
+    1082331000000106: "Primary Care",  # OOH
     166941000000106: "Primary Care",
+    183877003: "Private Referral",  # from refset
     185363009: "Community",
     185366001: "Community",
     185368000: "Community",
@@ -383,6 +385,7 @@ def load_apc_acsc_mapping() -> Dict[str, str]:
 
     return acsc_mapping
 
+
 @lru_cache(maxsize=1)
 def load_ed_acsc_mapping() -> Dict[str, str]:
     """Download SNOMED codes to Ambulatory Care Sensitive Conditions mapping from Sheffield Google Docs
@@ -396,7 +399,7 @@ def load_ed_acsc_mapping() -> Dict[str, str]:
     url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
     url = url.replace(" ", "%20")
     acsc = pd.read_csv(url, usecols=[0, 11])
-    acsc.columns = acsc.columns.str.strip ()
+    acsc.columns = acsc.columns.str.strip()
     acsc.columns = acsc.columns.str.lower().str.replace("[^a-z0-9]+", "_", regex=True)
     acsc_mapping = acsc.set_index("snomed_code").aec_clinical_conditions.to_dict()
 
