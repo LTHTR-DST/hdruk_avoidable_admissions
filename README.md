@@ -21,10 +21,10 @@ pip install "avoidable_admissions @ git+https://github.com/LTHTR-DST/hdruk_avoid
 
 Additional installation options are described in the [documentation](https://lthtr-dst.github.io/hdruk_avoidable_admissions/).
 
-Replace `<release-name>` with the latest release version e.g. `v0.1.0-alpha`.
-Omit `<release-name>` to install the latest code in the repo.
-
+Replace `<release-name>` with the latest release version e.g. `v0.2.1-alpha`.
 List of releases can be found here - <https://github.com/LTHTR-DST/hdruk_avoidable_admissions/releases>.
+
+Omit `<release-name>` to install the latest code in the repo.
 
 ## Quickstart
 

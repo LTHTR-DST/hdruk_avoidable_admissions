@@ -18,7 +18,7 @@ dynamic = ["version"]
 packages = ["avoidable_admissions"]
 
 [tool.setuptools.dynamic]
-version = {attr = "avoidable_admissions.VERSION"}
+version = {attr = "avoidable_admissions.__version__"}
 
 [project.urls]
 Homepage = "https://github.com/LTHTR-DST/hdruk_avoidable_admissions/"
