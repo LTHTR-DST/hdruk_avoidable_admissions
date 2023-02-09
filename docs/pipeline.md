@@ -88,7 +88,7 @@ df_features = build_admitted_care_features(good)
 # Second validation step using Feature Schema
 # Review and fix DQ issues.
 # This may require returning to the first validation step or even extraction.
-good_f, bad_f = validate_dataframe(df, AdmittedCareFeatureSchema)
+good_f, bad_f = validate_dataframe(df_features, AdmittedCareFeatureSchema)
 
 # Use the good_f dataframe for analysis as required by lead site
 ```
