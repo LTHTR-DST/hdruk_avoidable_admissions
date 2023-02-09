@@ -20,7 +20,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     # visit_id is not part of the data spec but is used here as a unique row identifier
     # Use `df["visit_id"] = df.reset_index(drop=True).index`
 
-    visit_id: Series[np.int64] = pa.Field(nullable=False, unique=True)
+    visit_id: Series[str] = pa.Field(nullable=False, unique=True, coerce=True)
 
     # Ensure this has been pseudonymised appropriately.
     patient_id: Series[str] = pa.Field(nullable=False)
@@ -219,7 +219,7 @@ The dataset should be validated successfully against this schema before analysis
 
 class EmergencyCareEpisodeSchema(pa.SchemaModel):
 
-    visit_id: Series[np.int64] = pa.Field(nullable=False, unique=True)
+    visit_id: Series[str] = pa.Field(nullable=False, unique=True, coerce=True)
 
     patient_id: Series[str] = pa.Field(nullable=False)
 
