@@ -1,7 +1,7 @@
 # mamba env update -f ./environment.yml --prune
 # The `- -e .` option under `- pip:` installs `avoidable_admissions` as a local development package
 # This allows easier importing without having to add the avoidable_admissions folder to PATH.
-name: hdruk_aa
+name: hdruk_aa5
 channels:
   - conda-forge
   - defaults
@@ -27,6 +27,8 @@ dependencies:
   - pre-commit
   - python-dotenv
   - seaborn
+  - yaml
+  - requests_cache
   # Uncomment these lines and update environment as analytics advances
   # - scikit-learn
   # - scipy
