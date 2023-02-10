@@ -27,6 +27,8 @@ dependencies:
   - pre-commit
   - python-dotenv
   - seaborn
+  - yaml
+  - requests_cache
   # Uncomment these lines and update environment as analytics advances
   # - scikit-learn
   # - scipy
