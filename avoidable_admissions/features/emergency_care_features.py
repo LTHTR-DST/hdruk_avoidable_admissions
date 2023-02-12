@@ -27,10 +27,10 @@ def _ethnos(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def _accomondationstatus(df: pd.DataFrame) -> pd.DataFrame:
+def _accommodationstatus(df: pd.DataFrame) -> pd.DataFrame:
 
     df["accommodationstatus_cat"] = df.accommodationstatus.replace(
-        feature_maps.accomodationstatus
+        feature_maps.accommodationstatus
     )
     return df
 
@@ -156,7 +156,7 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
 
     df = (
         df.pipe(_age)
-        .pipe(_accomondationstatus)
+        .pipe(_accommodationstatus)
         .pipe(_acsc_code)
         .pipe(_disstatus)
         .pipe(_edacuity)

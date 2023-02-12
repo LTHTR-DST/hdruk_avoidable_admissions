@@ -244,7 +244,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
 
     accommodationstatus: Series[np.int64] = pa.Field(
         description="https://www.datadictionary.nhs.uk/data_elements/accommodation_status__snomed_ct_.html",
-        isin=list(feature_maps.accomodationstatus),
+        isin=list(feature_maps.accommodationstatus),
         nullable=True,
     )
 
@@ -433,7 +433,7 @@ EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_
         "accommodationstatus_cat": pa.Column(
             str,
             nullable=True,
-            checks=[pa.Check.isin(set(feature_maps.accomodationstatus.values()))],
+            checks=[pa.Check.isin(set(feature_maps.accommodationstatus.values()))],
         ),
         "edarrivalmode_cat": pa.Column(
             str,
