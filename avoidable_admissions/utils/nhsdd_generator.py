@@ -10,13 +10,18 @@ python nhsdd_generator.py
 Check git diff to ensure everything looks good. The script will also print to stdout.
 """
 import json
+import os
 import re
 import sys
+
 import black
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from dotenv import find_dotenv, load_dotenv
+
 from avoidable_admissions.data.validate import EmergencyCareEpisodeSchema
+from avoidable_admissions.utils.FHIRTerminologyUtilites import FHIRTermClient
 
 
 def generate_nhsdd():
@@ -88,12 +93,31 @@ def generate_nhsdd_snomed():
 
     """
 
-    headers = {
-        "accept": "application/json",
-        "Accept-Language": "en-X-900000000000509007,en-X-900000000000508004,en",
-        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:15.0) Gecko/20100101 Firefox/15.0.1",
-    }
-    api_url = "https://browser.ihtsdotools.org/snowstorm/snomed-ct/browser/MAIN%2FSNOMEDCT-GB%2F2019-10-01/members?referenceSet={refset_id}&offset={offset}&limit={limit}"
+    try:
+        load_dotenv(find_dotenv())
+    except:
+        load_dotenv("../../.env")
+
+    try:
+        client_id = os.environ["ONTOLOGY_SERVER_CLIENT_ID"]
+        client_secret = os.environ["ONTOLOGY_SERVER_CLIENT_SECRET"]
+        token_url = os.environ["ONTOLOGY_SERVER_TOKEN_URL"]
+    except Exception as exc:
+        raise KeyError(
+            "Environment variables not set for Ontology Server credentials.", *exc.args
+        )
+
+    try:
+        fhir_url = "https://ontology.nhs.uk/staging/fhir"
+        fhirclient = FHIRTermClient(
+            fhir_url=fhir_url,
+            client_id=client_id,
+            client_secret=client_secret,
+            cache_backend="memory",
+            token_url=token_url,
+        )
+    except Exception as exc:
+        raise ConnectionError("Error creating FHIR Terminology Client", *exc.args)
 
     # Get URLs to NHS Data Dictionary definitions from the Schema
     ecds = EmergencyCareEpisodeSchema
@@ -120,18 +144,11 @@ def generate_nhsdd_snomed():
 
         print(k, "has SNOMED Code", refset_id, ". Getting Member Ids")
 
-        x = api_url.format(refset_id=refset_id, offset=0, limit=1000)
-        r = requests.get(x, headers=headers)
-        if r.status_code != 200:
-            print("Error", k, v, "Status:", r.status_code)
-            continue
-
-        result = r.json()
-        members = [
-            int(i.get("referencedComponentId"))
-            for i in result["items"]
-            if result["items"]
-        ]
+        # Use @dfleming9 client to get refset members
+        members = fhirclient.expand_valueset_to_list(
+            f"http://snomed.info/sct?fhir_vs=refset/{refset_id}",
+        )
+        members = sorted(int(i) for i in members)
 
         print("Got", len(members), "members")
         refset_members[k] = {"refset_id": refset_id, "members": members}
@@ -151,8 +168,7 @@ def generate_nhsdd_snomed():
 
 
 if __name__ == "__main__":
-    generate_nhsdd()
-    generate_nhsdd_snomed()
+
     if sys.argv[1] == "dd":
         print("Generating avoidable_admissions/data/nhsdd.py")
         generate_nhsdd()
@@ -162,6 +178,6 @@ if __name__ == "__main__":
     else:
         print(
             "Generating avoidable_admissions/data/nhsdd.py and avoidable_admissions/data/nhsdd_snomed.py"
-         )
+        )
         generate_nhsdd()
         generate_nhsdd_snomed()

@@ -41,6 +41,8 @@ dev = [
     "mkdocstrings",
     "nbstripout",
     "pre-commit",
+    "requests-cache",
+    "pyyaml"
 ]
 
 [tool.isort]
