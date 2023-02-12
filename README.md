@@ -1,4 +1,5 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=dev&repo=590237327&machine=basicLinux32gb&location=WestEurope)
+[![Documentation](https://github.com/lthtr-dst/hdruk_avoidable_admissions/actions/workflows/ci_mkdocs.yml/badge.svg)](https://lthtr-dst.github.io/hdruk_avoidable_admissions)
 
 # HDRUK Avoidable Admissions Analytics
 
