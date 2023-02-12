@@ -10,6 +10,23 @@ The functions described below generate these features automatically in preparati
 
 Ensure that data has undergone preprocessing and has passed the first validation step as described in the [analysis pipeline][data-analysis-pipeline] before using these functions.
 
+## Error codes
+
+A pragmatic approach has been used in dealing with missing data, unmapped codes and codes not in refsets.
+Please read section on [missing values][missing-values] in the [Data Validation][data-validation] chapter as well.
+
+During feature engineering, especially in the Emergency Care dataset that has several columns with SNOMED codes, the following rules are applied to assign the appropriate categories.
+
+| Source Data   | Mapping   | Refset    | Category                              | Who fixes             |
+|:-------------:|:---------:|:---------:|---------------------------------------|-----------------------|
+| Yes           | Yes       | Yes       | Assign to `Category`                  |                       |
+| Yes           | No        | Yes       | `ERROR:Unmapped - In Refset`          | Lead site to advise   |
+| Yes           | Yes       | No        | `ERROR:Not In Refset|{Category}`   | Lead site to fix      |
+| No            | x         | x         | `ERROR:Missing Data`                  | Local site if feasible|
+| Yes           | No        | No        | `ERROR:Unmapped - Not In Refset`      | Local site to fix     |
+
+Please see the source code for [`feature_maps.py`](https://github.com/LTHTR-DST/hdruk_avoidable_admissions/blob/dev/avoidable_admissions/features/feature_maps.py) and raise a [GitHub issue](https://github.com/LTHTR-DST/hdruk_avoidable_admissions/issues) for any questions or bugs.
+
 ::: avoidable_admissions.features.build_features
     handler: python
     options:

@@ -4,54 +4,82 @@ import pandas as pd
 from avoidable_admissions.features import feature_maps
 
 
+def replace_values(
+    data: pd.Series, replacements: dict, other: str = "ERROR:Unmapped - Not In Refset"
+) -> pd.Series:
+    # if value is in replacements, keep the value, else use `other` for all others
+    # then use replacements to assign the other categories
+
+    data_cat = (
+        data.where(data.isin(replacements), other).replace(replacements).astype(str)
+    )
+
+    return data_cat
+
+
 def _age(df: pd.DataFrame) -> pd.DataFrame:
 
     age_labels = feature_maps.age_labels
     age_bins = feature_maps.age_bins
     df["activage_cat"] = pd.cut(df.activage, bins=age_bins, labels=age_labels)
+    df["activage_cat"] = df["activage_cat"].astype(str)
 
     return df
 
 
 def _gender(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["gender_cat"] = df.gender.astype(str).replace(feature_maps.gender)
+    df["gender_cat"] = replace_values(df.gender.astype(str), feature_maps.gender)
 
     return df
 
 
 def _ethnos(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["ethnos_cat"] = df.ethnos.replace(feature_maps.ethnos)
+    df["ethnos_cat"] = replace_values(df.ethnos, feature_maps.ethnos)
 
     return df
 
 
 def _accommodationstatus(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["accommodationstatus_cat"] = df.accommodationstatus.replace(
-        feature_maps.accommodationstatus
+    df["accommodationstatus_cat"] = replace_values(
+        df.accommodationstatus, feature_maps.accommodationstatus
     )
+
+    return df
+
+
+def _edarrivaldatetime(df: pd.DataFrame) -> pd.DataFrame:
+
+    df.edarrivaldatetime = pd.to_datetime(df.edarrivaldatetime)
+    df["edarrival_dayofweek"] = df.edarrivaldatetime.dt.strftime("%A")
+    df["edarrival_hourofday"] = df.edarrivaldatetime.dt.hour
+
     return df
 
 
 def _edarivalemode(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["edarrivalmode_cat"] = df.edarrivalmode.replace(feature_maps.edarrivalmode)
+    df["edarrivalmode_cat"] = replace_values(
+        df.edarrivalmode, feature_maps.edarrivalmode
+    )
 
     return df
 
 
 def _edattendsource(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["edattendsource_cat"] = df.edattendsource.replace(feature_maps.edattendsource)
+    df["edattendsource_cat"] = replace_values(
+        df.edattendsource, feature_maps.edattendsource
+    )
 
     return df
 
 
 def _edacuity(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["edacuity_cat"] = df.edacuity.replace(feature_maps.edacuity)
+    df["edacuity_cat"] = replace_values(df.edacuity, feature_maps.edacuity)
 
     return df
 
@@ -63,11 +91,7 @@ def _edinvest(df: pd.DataFrame) -> pd.DataFrame:
 
     for col in cols:
 
-        # if value is in replacements, keep the value, else use 'Urgent' for all others
-        # then use replacements to assign the other categories
-        df[col + "_cat"] = (
-            df[col].where(df[col].isin(replacements), "Urgent").replace(replacements)
-        )
+        df[col + "_cat"] = replace_values(df[col], replacements, "Urgent")
 
     return df
 
@@ -78,24 +102,17 @@ def _edtreat(df: pd.DataFrame) -> pd.DataFrame:
     replacements = feature_maps.edtreat
     for col in cols:
 
-        # if value is in replacements, keep the value, else use 'Urgent' for all others
-        # then use replacements to assign the other categories
-        df[col + "_cat"] = (
-            df[col].where(df[col].isin(replacements), "Urgent").replace(replacements)
-        )
+        df[col + "_cat"] = replace_values(df[col], replacements, "Urgent")
 
     return df
 
 
 def _eddiag_seasonal(df: pd.DataFrame) -> pd.DataFrame:
     # Only use first diagnosis recorded (eddiag_01) to record seasonal diagnosis
-    replacements = feature_maps.eddiag_seasonal
 
-    # if value is in replacements, keep the value, else use 'nan' for all others
-    # then use replacements to assign the other categories
-    df["eddiag_seasonal_cat"] = df.eddiag_01.where(
-        df.eddiag_01.isin(replacements), np.nan
-    ).replace(replacements)
+    df["eddiag_seasonal_cat"] = replace_values(
+        df.eddiag_01, feature_maps.eddiag_seasonal
+    )
 
     return df
 
@@ -103,31 +120,26 @@ def _eddiag_seasonal(df: pd.DataFrame) -> pd.DataFrame:
 def _edattenddispatch(df: pd.DataFrame) -> pd.DataFrame:
     # Discharge Destination
 
-    df["edattenddispatch_cat"] = df.edattenddispatch.replace(
-        feature_maps.edattenddispatch
+    df["edattenddispatch_cat"] = replace_values(
+        df.edattenddispatch, feature_maps.edattenddispatch
     )
+
     return df
 
 
 def _edrefservice(df: pd.DataFrame) -> pd.DataFrame:
 
-    replacements = feature_maps.edrefservice
-
-    df["edrefservice_cat"] = df.edrefservice.where(
-        df.edrefservice.isin(replacements), "Other"
-    ).replace(replacements)
+    df["edrefservice_cat"] = replace_values(
+        df.edrefservice, feature_maps.edrefservice, "Other"
+    )
 
     return df
 
 
 def _eddiagqual(df: pd.DataFrame) -> pd.DataFrame:
     # Only applicable to eddiag_01
-    # This deviates from the spec by assigning nan to values not in the spec
 
-    replacements = feature_maps.eddiagqual
-    df["eddiagqual_01_cat"] = df.eddiagqual_01.where(
-        df.eddiagqual_01.isin(replacements), np.nan
-    ).replace(replacements)
+    df["eddiagqual_01_cat"] = replace_values(df.eddiagqual_01, feature_maps.eddiagqual)
 
     return df
 
@@ -137,17 +149,14 @@ def _acsc_code(df: pd.DataFrame) -> pd.DataFrame:
     # TODO: This section needs manual review of a good sample size to ensure it works
 
     acsc_mapping = feature_maps.load_ed_acsc_mapping()
-    df["eddiag_01_acsc"] = df.eddiag_01.replace(acsc_mapping)
-    df.eddiag_01_acsc = df.eddiag_01_acsc.where(
-        df.eddiag_01_acsc.isin(set(acsc_mapping.values())), "-"
-    )
+    df["eddiag_01_acsc"] = replace_values(df.eddiag_01, acsc_mapping)
 
     return df
 
 
 def _disstatus(df: pd.DataFrame) -> pd.DataFrame:
 
-    df["disstatus_cat"] = df.disstatus.replace(feature_maps.disstatus)
+    df["disstatus_cat"] = replace_values(df.disstatus, feature_maps.disstatus)
 
     return df
 
@@ -161,6 +170,7 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(_disstatus)
         .pipe(_edacuity)
         .pipe(_edarivalemode)
+        .pipe(_edarrivaldatetime)
         .pipe(_edattenddispatch)
         .pipe(_edattendsource)
         .pipe(_eddiag_seasonal)

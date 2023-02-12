@@ -4,6 +4,11 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 
+from avoidable_admissions.data import nhsdd_snomed
+
+# to prevent accidentally removing nhsdd_snomed import which is used in eval
+_ = nhsdd_snomed.__doc__
+
 age_labels = [
     "18-19",
     "20 - 24",
@@ -23,7 +28,6 @@ age_labels = [
 ]
 
 age_bins = age_bins = [17, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 130]
-
 
 gender = {
     "1": "Male",
@@ -54,243 +58,6 @@ ethnos = {
     "Z": "Not stated",
     "99": "Not known",
 }
-
-accomodationstatus = {
-    0: np.nan,
-    1064831000000106: "Unknown",
-    1064841000000102: "Unknown",
-    1066881000000100: "Unknown",
-    160734000: "Yes",
-    224221006: "No",
-    224225002: "No",
-    224231004: "No",
-    32911000: "No",
-    394923006: "No",
-    414418009: "No",
-}
-
-edarrivalmode = {
-    0: np.nan,
-    1047991000000102: "Sheffield-ToDo",
-    1048001000000106: "Sheffield-ToDo",
-    1048021000000102: "Sheffield-ToDo",
-    1048031000000100: "Sheffield-ToDo",
-    1048041000000109: "Sheffield-ToDo",
-    1048051000000107: "Sheffield-ToDo",
-    1048061000000105: "Walk-In",
-    1048071000000103: "Walk-In",
-    1048081000000101: "Sheffield-ToDo",
-}
-
-edattendsource = {
-    0: np.nan,
-    1052681000000105: "Community",
-    1065391000000104: "Personal",
-    1065401000000101: "Community",
-    1065991000000100: "Community",
-    1066001000000101: "Community",
-    1066011000000104: "Community",
-    1066021000000105: "Emergency Services",
-    1066031000000107: "Emergency Services",
-    1066041000000103: "Emergency Services",
-    1066051000000100: "Emergency Services",
-    1066061000000102: "Emergency Services",
-    1066431000000102: "Hospital",
-    1066441000000106: "Hospital",
-    1077191000000103: "Community",
-    1077201000000101: "Community",
-    1077211000000104: "Community",
-    1077761000000105: "Community",
-    1079521000000104: "Hospital",
-    1082331000000106: "Primary Care",  # OOH
-    166941000000106: "Primary Care",
-    183877003: "Private Referral",  # from refset
-    185363009: "Community",
-    185366001: "Community",
-    185368000: "Community",
-    185369008: "Community",
-    198261000000104: "Emergency Services",
-    276491000: "Primary Care",
-    315261000000101: "Personal",
-    507291000000100: "Personal",
-    835091000000109: "Hospital",
-    835101000000101: "Hospital",
-    877171000000103: "Community",
-    879591000000102: "Primary Care",
-    889801000000100: "Emergency Services",
-}
-
-edacuity = {
-    0: np.nan,
-    1064891000000107: "1 - Immediate care level emergency care",
-    1064901000000108: "3 - Urgent level emergency care",
-    1064911000000105: "2 - Very urgent level emergency care",
-    1077241000000103: "4 - Standard level emergency care",
-    1077251000000100: "5 - Low acuity level emergency care",
-}
-
-edinvest = {
-    0: np.nan,
-    1088291000000101: np.nan,
-    167252002: "Non-urgent",
-    27171005: "Non-urgent",
-    53115007: "Non-urgent",
-    67900009: "Non-urgent",
-}
-
-edtreat = {
-    0: np.nan,
-    183964008: np.nan,
-    266712008: "Non-urgent",
-    413334001: "Non-urgent",
-    81733005: "Non-urgent",
-}
-
-eddiag_seasonal = {
-    0: np.nan,
-    12295008: "Chronic disease exacerbation",
-    1325161000000102: "Respiratory infection",
-    1325171000000109: "Respiratory infection",
-    1325181000000106: "Respiratory infection",
-    13645005: "Chronic disease exacerbation",
-    195951007: "Chronic disease exacerbation",
-    195967001: "Chronic disease exacerbation",
-    205237003: "Respiratory infection",
-    233604007: "Respiratory infection",
-    278516003: "Respiratory infection",
-    36971009: "Respiratory infection",
-    50417007: "Respiratory infection",
-    54150009: "Respiratory infection",
-    6142004: "Respiratory infection",
-    62994001: "Respiratory infection",
-    80384002: "Respiratory infection",
-    90176007: "Respiratory infection",
-}
-
-eddiagqual = {
-    415684004: "Suspected",
-    410605003: "Confirmed",
-}
-
-edattenddispatch = {
-    0: np.nan,
-    1066331000000109: "Ambulatory / Short Stay",
-    1066341000000100: "Ambulatory / Short Stay",
-    1066351000000102: "Ambulatory / Short Stay",
-    1066361000000104: "Admitted",
-    1066371000000106: "Admitted",
-    1066381000000108: "Admitted",
-    1066391000000105: "Admitted",
-    1066401000000108: "Admitted",
-    183919006: "Transfer",
-    19712007: "Transfer",
-    305398007: "Died",
-    306689006: "Discharged",
-    306691003: "Discharged",
-    306694006: "Discharged",
-    306705005: "Discharged",
-    306706006: "Admitted",
-    50861005: "Discharged",
-}
-
-edrefservice = {
-    0: np.nan,
-    1064851000000104: "Medical",
-    183516009: "Medical",
-    183518005: "Medical",
-    183519002: "Medical",
-    183521007: "Medical",
-    183522000: "Medical",
-    183523005: "Medical",
-    183524004: "Psychiatric",
-    183542009: "Surgical",
-    183543004: "Surgical",
-    183544005: "Surgical",
-    183545006: "Surgical",
-    183546007: "Surgical",
-    183548008: "ObGyn",
-    183549000: "ObGyn",
-    183561008: "Local Medical",
-    202291000000107: "Psychiatric",
-    247541000000106: "Community / OPD",
-    276490004: "Local Medical",
-    306107006: "Critical Care",
-    306111000: "Medical",
-    306114008: "Medical",
-    306118006: "Medical",
-    306123006: "Medical",
-    306124000: "Medical",
-    306125004: "Medical",
-    306127007: "Medical",
-    306129005: "Community / OPD",
-    306136006: "Psychiatric",
-    306138007: "Psychiatric",
-    306140002: "Medical",
-    306148009: "Medical",
-    306152009: "Local Medical",
-    306182003: "Surgical",
-    306184002: "Surgical",
-    306198005: "Surgical",
-    306200004: "Surgical",
-    306201000: "Surgical",
-    306237005: "Medical",
-    306285006: "Medical",
-    306802002: "Medical",
-    306934005: "Surgical",
-    307374004: "Medical",
-    307375003: "Community / OPD",
-    307376002: "Community / OPD",
-    307380007: "Community / OPD",
-    327121000000104: "Surgical",
-    353961000000104: "Community / OPD",
-    380241000000107: "Psychiatric",
-    382271000000102: "Critical Care",
-    384711009: "Surgical",
-    384712002: "Surgical",
-    38670004: "Community / OPD",
-    413127007: "Psychiatric",
-    415263003: "Community / OPD",
-    4266003: "Community / OPD",
-    516511000000107: "Community / OPD",
-    61801003: "Community / OPD",
-    770411000000102: "Local Medical",
-    770677000: "Critical Care",
-    78429003: "Community / OPD",
-    785621000000108: "Community / OPD",
-    785681000000109: "Community / OPD",
-    785701000000106: "Community / OPD",
-    785721000000102: "Community / OPD",
-    785761000000105: "Community / OPD",
-    785781000000101: "Community / OPD",
-    811391000000104: "Community / OPD",
-    818861000000107: "Community / OPD",
-    823961000000102: "Community / OPD",
-    894171000000100: "Community / OPD",
-    898791000000105: "Medical",
-    975951000000109: "Critical Care",
-}
-
-disstatus = {
-    0: np.nan,
-    1066301000000103: "Non-urgent",
-    1066311000000101: "Non-urgent",
-    1066321000000107: "Non-urgent",
-    1077021000000100: "Non-urgent",
-    1077031000000103: "Urgent",
-    1077041000000107: "Urgent",
-    1077051000000105: "Urgent",
-    1077061000000108: "Urgent",
-    1077071000000101: "Urgent",
-    1077081000000104: "Urgent",
-    1077091000000102: "Urgent",
-    1077101000000105: "Urgent",
-    1077781000000101: "Urgent",
-    1324201000000109: "Urgent",
-    182992009: "Non-urgent",
-    63238001: "Died",
-    75004002: "Died",
-}
-
 
 admisorc = {
     "19": "Residence",
@@ -389,6 +156,356 @@ dismeth = {
 }
 
 
+def generate_map(name: str, feature_r: dict) -> dict:
+
+    # First generate a reverse map as snomed_code:category
+
+    feature = {
+        snomed_code: category
+        for category, snomed_list in feature_r.items()
+        for snomed_code in snomed_list
+    }
+
+    # Get the members of the refset from nhsdd_snomed
+    # This file has been automatically generated from the Ontology Server
+    refset_members = eval(f"nhsdd_snomed.{name}['members']")
+
+    # Create a set of all snomed codes in feature
+    feature_members = feature.keys()
+
+    # Unmapped codes are the codes in the refset that are not in feature
+    # For each code in refset that is not in feature, set to 'unmapped'
+
+    for i in refset_members:
+        if i not in feature_members:
+            feature[i] = "ERROR:Unmapped - In Refset"
+
+    # For codes that appear in the mapping but not in the refset
+    # append '|Not-In-Refset' tp existing value
+
+    for k, v in feature.items():
+        if k not in refset_members:
+            feature[k] = "ERROR:Not In Refset|" + v
+
+    feature[0] = "ERROR:Missing Data"
+
+    # Add in a placeholder for codes that are neither in the featuremap nor in refset
+    # These are for unforeseen values that may appear in the source data
+
+    feature[1] = "ERROR:Unmapped - Not In Refset"
+
+    return feature
+
+
+##############################################################################
+# accommodationstatus
+##############################################################################
+accommodationstatus_r = {
+    "Unknown": [1064831000000106, 1064841000000102, 1066881000000100],
+    "Yes": [160734000],
+    "No": [224221006, 224225002, 224231004, 32911000, 394923006, 414418009],
+}
+
+accommodationstatus = generate_map("accommodationstatus", accommodationstatus_r)
+
+##############################################################################
+# edarrivalmode
+##############################################################################
+edarrivalmode_r = {
+    "Walk-In": [1048061000000105, 1048071000000103],
+}
+
+edarrivalmode = generate_map("edarrivalmode", edarrivalmode_r)
+
+##############################################################################
+# edattendsource
+##############################################################################
+edattendsource_r = {
+    "Community": [
+        1052681000000105,
+        1065401000000101,
+        1065991000000100,
+        1066001000000101,
+        1066011000000104,
+        1077191000000103,
+        1077201000000101,
+        1077211000000104,
+        1077761000000105,
+        185363009,
+        185366001,
+        185368000,
+        185369008,
+        877171000000103,
+    ],
+    "Personal": [1065391000000104, 315261000000101, 507291000000100],
+    "Emergency Services": [
+        1066021000000105,
+        1066031000000107,
+        1066041000000103,
+        1066051000000100,
+        1066061000000102,
+        198261000000104,
+        889801000000100,
+    ],
+    "Hospital": [
+        1066431000000102,
+        1066441000000106,
+        1079521000000104,
+        835091000000109,
+        835101000000101,
+    ],
+    "Primary Care": [1082331000000106, 166941000000106, 276491000, 879591000000102],
+    "Private Referral": [183877003],
+}
+
+edattendsource = generate_map("edattendsource", edattendsource_r)
+
+##############################################################################
+# edacuity
+##############################################################################
+edacuity = {
+    0: "ERROR:Missing Data",
+    1064891000000107: "1 - Immediate care level emergency care",
+    1064901000000108: "3 - Urgent level emergency care",
+    1064911000000105: "2 - Very urgent level emergency care",
+    1077241000000103: "4 - Standard level emergency care",
+    1077251000000100: "5 - Low acuity level emergency care",
+}
+
+##############################################################################
+# edinvest
+##############################################################################
+
+edinvest_r = {
+    "Non-urgent": [167252002, 27171005, 53115007, 67900009],
+    "Urgent": [
+        104686004,
+        105000003,
+        113091000,
+        16254007,
+        16310003,
+        164729009,
+        165320004,
+        167036008,
+        16830007,
+        168338000,
+        168537006,
+        179929004,
+        252167001,
+        252316009,
+        252375001,
+        26604007,
+        26958001,
+        269874008,
+        270982000,
+        271232007,
+        282096008,
+        29303009,
+        29893006,
+        30088009,
+        3116009,
+        35650009,
+        363255004,
+        392010000,
+        397798009,
+        401294003,
+        40701008,
+        416838001,
+        43396009,
+        55235003,
+        56027003,
+        60170009,
+        61911006,
+        62847008,
+        68793005,
+        70648006,
+        74500006,
+        77477000,
+        86944008,
+        89659001,
+    ],
+    "No-investigation": [1088291000000101],
+}
+
+edinvest = generate_map("edinvest", edinvest_r)
+
+##############################################################################
+# edtreat
+##############################################################################
+edtreat_r = {
+    "Non-urgent": [
+        183964008,
+        266712008,
+        413334001,
+        81733005,
+    ]
+}
+
+edtreat = generate_map("edtreat", edtreat_r)
+
+##############################################################################
+# eddiag_seasonal
+##############################################################################
+eddiag_seasonal_r = {
+    "Chronic disease exacerbation": [12295008, 13645005, 195951007, 195967001],
+    "Respiratory infection": [
+        1325161000000102,
+        1325171000000109,
+        1325181000000106,
+        205237003,
+        233604007,
+        278516003,
+        36971009,
+        50417007,
+        54150009,
+        6142004,
+        62994001,
+        80384002,
+        90176007,
+    ],
+}
+
+eddiag_seasonal = generate_map("eddiag", eddiag_seasonal_r)
+
+##############################################################################
+# eddiagqual
+##############################################################################
+eddiagqual = {
+    415684004: "Suspected",
+    410605003: "Confirmed",
+}
+
+##############################################################################
+# edattenddispatch
+##############################################################################
+edattenddispatch_r = {
+    "Ambulatory / Short Stay": [1066331000000109, 1066341000000100, 1066351000000102],
+    "Admitted": [
+        1066361000000104,
+        1066371000000106,
+        1066381000000108,
+        1066391000000105,
+        1066401000000108,
+        306706006,
+    ],
+    "Transfer": [183919006, 19712007],
+    "Died": [305398007],
+    "Discharged": [306689006, 306691003, 306694006, 306705005, 50861005],
+}
+
+edattenddispatch = generate_map("edattenddispatch", edattenddispatch_r)
+
+##############################################################################
+# edrefservice
+##############################################################################
+edrefservice_r = {
+    "Medical": [
+        1064851000000104,
+        183516009,
+        183518005,
+        183519002,
+        183521007,
+        183522000,
+        183523005,
+        306111000,
+        306114008,
+        306118006,
+        306123006,
+        306124000,
+        306125004,
+        306127007,
+        306140002,
+        306148009,
+        306237005,
+        306285006,
+        306802002,
+        307374004,
+        898791000000105,
+    ],
+    "Psychiatric": [
+        183524004,
+        202291000000107,
+        306136006,
+        306138007,
+        380241000000107,
+        413127007,
+    ],
+    "Surgical": [
+        183542009,
+        183543004,
+        183544005,
+        183545006,
+        183546007,
+        306182003,
+        306184002,
+        306198005,
+        306200004,
+        306201000,
+        306934005,
+        327121000000104,
+        384711009,
+        384712002,
+    ],
+    "ObGyn": [183548008, 183549000],
+    "Local Medical": [183561008, 276490004, 306152009, 770411000000102],
+    "Community / OPD": [
+        247541000000106,
+        306129005,
+        307375003,
+        307376002,
+        307380007,
+        353961000000104,
+        38670004,
+        415263003,
+        4266003,
+        516511000000107,
+        61801003,
+        78429003,
+        785621000000108,
+        785681000000109,
+        785701000000106,
+        785721000000102,
+        785761000000105,
+        785781000000101,
+        811391000000104,
+        818861000000107,
+        823961000000102,
+        894171000000100,
+    ],
+    "Critical Care": [306107006, 382271000000102, 770677000, 975951000000109],
+}
+
+edrefservice = generate_map("edrefservice", edrefservice_r)
+
+##############################################################################
+# disstatus
+##############################################################################
+disstatus_r = {
+    "Non-urgent": [
+        1066301000000103,
+        1066311000000101,
+        1066321000000107,
+        1077021000000100,
+        182992009,
+    ],
+    "Urgent": [
+        1077031000000103,
+        1077041000000107,
+        1077051000000105,
+        1077061000000108,
+        1077071000000101,
+        1077081000000104,
+        1077091000000102,
+        1077101000000105,
+        1077781000000101,
+        1324201000000109,
+    ],
+    "Died": [63238001, 75004002],
+}
+
+disstatus = generate_map("disstatus", disstatus_r)
+
+
 @lru_cache(maxsize=1)
 def load_apc_acsc_mapping() -> Dict[str, str]:
     """Download ICD10 to Ambulatory Care Sensitive Conditions mapping from Sheffield Google Docs
@@ -424,5 +541,36 @@ def load_ed_acsc_mapping() -> Dict[str, str]:
     acsc.columns = acsc.columns.str.strip()
     acsc.columns = acsc.columns.str.lower().str.replace("[^a-z0-9]+", "_", regex=True)
     acsc_mapping = acsc.set_index("snomed_code").aec_clinical_conditions.to_dict()
+
+    # Set ERROR codes to allow validation to pass after feature engineering
+    # TODO: Tidy this up
+
+    # Get the members of the refset from nhsdd_snomed
+    # This file has been automatically generated from the Ontology Server
+    refset_members = nhsdd_snomed.eddiag["members"]
+
+    # Create a set of all snomed codes in feature
+    feature_members = acsc_mapping.keys()
+
+    # Unmapped codes are the codes in the refset that are not in feature
+    # For each code in refset that is not in feature, set to 'unmapped'
+
+    for i in refset_members:
+        if i not in feature_members:
+            acsc_mapping[i] = "ERROR:Unmapped - In Refset"
+
+    # For codes that appear in the mapping but not in the refset
+    # append '|Not-In-Refset' tp existing value
+
+    for k, v in acsc_mapping.items():
+        if k not in refset_members:
+            acsc_mapping[k] = "ERROR:Mapped - Not In Refset|" + v
+
+    acsc_mapping[0] = "ERROR:Missing Data"
+
+    # Add in a placeholder for codes that are neither in the featuremap nor in refset
+    # These are for unforeseen values that may appear in the source data
+
+    acsc_mapping[1] = "ERROR:Unmapped - Not In Refset"
 
     return acsc_mapping

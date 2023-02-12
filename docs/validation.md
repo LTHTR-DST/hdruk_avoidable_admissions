@@ -37,7 +37,7 @@ df['admidate'] = df['admidate'].dt.date
 df['accommodationstatus'] = df['accommodationstatus'].fillna(0)
 ```
 
-## Mising Values
+## Missing Values
 
 _To be finalised after further discussion and testing._
 
@@ -48,4 +48,4 @@ For the purposes of this project, several pragmatic choices have been made regar
 1. Where a definition exists for how missing values should be coded, for instance in the NHS data model, use this.
 2. For SNOMED codes, which are always integers, use 0 (zero) to replace all missing values. This avoids validation errors caused by `NaN` values that are treated as `float` dtype by Pandas.
 3. For strings, use `"-"` (without the quotes) for missing values.
-4. During feature engineering, if a code has not been assigned a category in the specification, the value `"Other"` is assigned.
+4. During [feature engineering][feature-engineering], custom error values are assigned to codes that are missing from either the refsets or mapping.

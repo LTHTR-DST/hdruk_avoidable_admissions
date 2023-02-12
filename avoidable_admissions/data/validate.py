@@ -1,6 +1,5 @@
 import warnings
-from contextlib import nullcontext
-from datetime import date, datetime
+from datetime import datetime
 from typing import Tuple
 
 import numpy as np
@@ -23,7 +22,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
     visit_id: Series[str] = pa.Field(nullable=False, unique=True, coerce=True)
 
     # Ensure this has been pseudonymised appropriately.
-    patient_id: Series[str] = pa.Field(nullable=False)
+    patient_id: Series[str] = pa.Field(nullable=False, coerce=True)
 
     gender: Series[str] = pa.Field(
         description=nhsdd.gender["url"],
@@ -221,7 +220,7 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
 
     visit_id: Series[str] = pa.Field(nullable=False, unique=True, coerce=True)
 
-    patient_id: Series[str] = pa.Field(nullable=False)
+    patient_id: Series[str] = pa.Field(nullable=False, coerce=True)
 
     gender: Series[str] = pa.Field(
         description=nhsdd.gender["url"],
@@ -394,7 +393,7 @@ EmergencyCareEpisodeSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.to_s
                 )
             ],
         ),
-        "edtreat_[0-9]{2}": pa.Column(
+        "edtreat_[0-9]{2}$": pa.Column(
             description="https://www.datadictionary.nhs.uk/data_elements/emergency_care_procedure__snomed_ct_.html",
             dtype=np.int64,
             nullable=True,
@@ -429,6 +428,26 @@ EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_
             str,
             nullable=True,
             checks=[pa.Check.isin(set(feature_maps.ethnos.values()))],
+        ),
+        "edarrival_dayofweek": pa.Column(
+            str,
+            nullable=True,
+            checks=[
+                pa.Check.isin(
+                    [
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday",
+                        "Saturday",
+                        "Sunday",
+                    ]
+                )
+            ],
+        ),
+        "edarrival_hourofday": pa.Column(
+            int, nullable=True, checks=[pa.Check.ge(0), pa.Check.le(23)]
         ),
         "accommodationstatus_cat": pa.Column(
             str,
@@ -539,23 +558,14 @@ def validate_dataframe(
         schema (pa.DataFrameSchema): Pandera schema to validate against
         kwargs: The following keyword arguments are currently supported
         start_date (datetime): Study start date (inclusive)
-        end_date (datetime): Study end date (inclusive)
-
+        end_date (datetime): Study end date (excluded)
+        ignore_cols (list): Columns to ignore during validation checks.
+        update_cols (dict[str:dict]): Dictionary of column:properties to update schema.
 
     Returns:
         _Good_ and _Bad_ dataframes. See example below.
 
-    ## Customising Study Dates
-
-    As a default, the study dates specified in the initial protocol will be used (`admidate>=datetime(2021,11,1) and admidate<datetime(2022,11,1)`).
-    However, these can be altered by providing these as keyword arguments as shown in example below.
-
-    This validation rule will be applied to `admidate` in the Acute Admissions dataset and to `edarrivaldatetime` in the emergency care dataset as below.
-
-    `admidate>=start_date` and `admidate<end_date`. The `<` for end_date allows `admidate=31-10-2022 23:59:00` to pass validation.
-
-
-    ## Validation Example:
+    ## Validation example
 
     ``` python
     from avoidable_admissions.data.validate import (
@@ -566,10 +576,6 @@ def validate_dataframe(
 
     df = pd.read_csv('path/to/data.csv')
     good, bad = validate_dataframe(df, AdmittedCareEpisodeSchema)
-
-    # To use an alternative study period, specify the start_date and end_date parameters
-    good, bad = validate_dataframe(df, AdmittedCareEpisodeSchema, start_date=datetime(2019,1,1), end_date=datetime(2019,12,31))
-
     ```
 
     If `df` had rows that fail validation, the function will print an output similar to below.
@@ -590,8 +596,73 @@ def validate_dataframe(
 
     Fix data quality iteratively to ensure there are no errors.
 
-    If you find a bug in the validation code, and correct data fails validation, please raise a
-    [GitHub issue](https://github.com/LTHTR-DST/hdruk_avoidable_admissions/issues).
+    If you find a bug in the validation code, and correct data fails validation,
+    please raise a [GitHub issue](https://github.com/LTHTR-DST/hdruk_avoidable_admissions/issues).
+
+    ## Customising validation
+
+    ### Customise study dates
+
+    As a default, the study dates specified in the initial protocol will be used
+    (`admidate>=datetime(2021,11,1) and admidate<datetime(2022,11,1)`).
+    However, these can be altered by providing these as keyword arguments.
+
+    The following rule is applied to `admidate` in the Acute Admissions dataset
+    and to `edarrivaldatetime` in the emergency care dataset.
+
+    `admidate>=start_date` and `admidate<end_date`
+
+    The `<end_date` allows `31-10-2022 23:59:00` to pass validation when
+    `end_date` is set to `datetime(2022,11,1)`.
+
+    ### Ignore selected columns
+
+    Passing a list of column names to`ignore_cols` as a keyword argument will
+    apply the following properties, effectively turning off validation.
+
+    ```python
+    {
+        'dtype': None,
+        'checks': [],
+        'nullable': False,
+        'unique': False,
+        'coerce': False,
+        'required': True
+    }
+    ```
+
+    ### Update validation rules
+
+    Passing a dictionary of {column_name: property_dict} allows fine-grained control.
+    For example, to update remove checks on `edchiefcomplaint` but preserve
+    other validation rules, pass the following to `update_cols`.
+
+    ### Custom validation example
+
+    The example below applies the following custom rules:
+
+    - Change study start and end dates
+    - Ignore validation on `eddiag_NN` columns.
+        This requires both *_01* and *_[0-9]{2}$* regex suffixes to be set.
+        Note the _$_ at the end of regex.
+    - Don't perform checks on `edchiefcomplaint` but retain other rules e.g dtype
+    - Dont' check data type for `accommodationstatus` but retain other rules
+
+
+    ```python
+    good, bad = validate_dataframe(
+        df,
+        schema,
+        start_date=datetime(2021, 10, 1),
+        end_date=datetime(2022, 11, 1),
+        ignore_cols=["eddiag_01", "eddiag_[0-9]{2}$"],
+        update_cols={
+            "edchiefcomplaint": {"checks": []},
+            "accommodationstatus": {"dtype": None},
+        }
+    )
+    ```
+
 
     """
 
@@ -610,16 +681,36 @@ def validate_dataframe(
     ]
 
     if schema.name.startswith("AdmittedCare"):
-        schema = schema.update_column(
-            column_name="admidate",
-            checks=date_checks,
-        )
-
+        cohort_date_col = "admidate"
     elif schema.name.startswith("EmergencyCare"):
+        cohort_date_col = "edarrivaldatetime"
 
-        schema = schema.update_column(
-            column_name="edarrivaldatetime", checks=date_checks
-        )
+    updated_column_props = {}
+
+    updated_column_props[cohort_date_col] = {"checks": date_checks}
+
+    # New feature - allow user to ignore checks on some columns
+    ignore_cols = kwargs.get("ignore_cols", [])
+
+    update_cols = kwargs.get("update_cols", {})
+
+    blank_props = {
+        "dtype": None,
+        "checks": [],
+        "nullable": False,
+        "unique": False,
+        "coerce": False,
+        "required": True,
+    }
+
+    for col in ignore_cols:
+        updated_column_props[col] = blank_props
+
+    updated_column_props.update(update_cols)
+
+    # If a column in ignore_cols is not present in schema, this will raise
+    # a SchemaInitError with name of column causing the error.
+    schema = schema.update_columns(updated_column_props)
 
     try:
         # Capture all errors
