@@ -1147,9 +1147,9 @@ HTML(out)
 </tr>
 <tr>
 <th>Indeterminate</th>
-<td>4</td>
+<td>4###</td>
 <td>3#.##</td>
-<td>9</td>
+<td>9###</td>
 <td>6#.##</td>
 <td>1###</td>
 </tr>
@@ -1214,11 +1214,11 @@ HTML(out)
 </tr>
 <tr>
 <th>Not known</th>
-<td>0</td>
+<td>1###</td>
 <td>0#.##</td>
-<td>1</td>
+<td>1###</td>
 <td>1#.##</td>
-<td>1</td>
+<td>1###</td>
 </tr>
 <tr>
 <th>Not stated</th>
@@ -1348,7 +1348,7 @@ HTML(out)
 <tr>
 <th rowspan="6" valign="top">Admission Source</th>
 <th>Care Home</th>
-<td>2</td>
+<td>2###</td>
 <td>1#.##</td>
 <td>1###</td>
 <td>8#.##</td>
@@ -1364,9 +1364,9 @@ HTML(out)
 </tr>
 <tr>
 <th>Penal</th>
-<td>5</td>
+<td>5###</td>
 <td>5#.##</td>
-<td>5</td>
+<td>5###</td>
 <td>5#.##</td>
 <td>1###</td>
 </tr>
@@ -1616,7 +1616,7 @@ HTML(out)
 </tr>
 <tr>
 <th>Penal</th>
-<td>3</td>
+<td>3###</td>
 <td>1#.##</td>
 <td>2###</td>
 <td>8#.##</td>
@@ -1683,7 +1683,7 @@ HTML(out)
 </tr>
 <tr>
 <th>Not Applicable</th>
-<td>0</td>
+<td>1###</td>
 <td>0#.##</td>
 <td>1###</td>
 <td>1#.##</td>
@@ -1691,7 +1691,7 @@ HTML(out)
 </tr>
 <tr>
 <th>Unknown</th>
-<td>0</td>
+<td>1###</td>
 <td>0#.##</td>
 <td>1###</td>
 <td>1#.##</td>
