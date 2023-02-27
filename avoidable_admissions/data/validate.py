@@ -119,7 +119,7 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
 AdmittedCareEpisodeSchema: pa.DataFrameSchema = (
     AdmittedCareEpisodeSchema.to_schema().add_columns(
         {
-            "diag_[0-9]{2}": pa.Column(
+            "diag_[0-9]{2}$": pa.Column(
                 str,
                 nullable=True,
                 regex=True,
