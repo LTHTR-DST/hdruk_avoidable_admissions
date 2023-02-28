@@ -935,7 +935,30 @@ categorical_features = {
 ```
 
 ```python
-def make_crosstab(colname, tablename):
+# Select Cols to Keep
+keep_cols = ['patient_id']
+relevant_cols = list(
+    set(df.columns.to_list()) - set(keep_cols)
+)
+
+# Create Function to Suppress Data
+def supress_lownum(col, threshold, relevant_cols):
+    # for row, col in relevant_cols:
+    if col.name in relevant_cols:
+        counts = col.value_counts()
+        to_supress = counts[counts <= threshold].index
+        return col.replace(to_supress, np.nan)
+    
+    return col
+
+# Set Threshold
+THRESHOLD = 5 # Set value as per preference
+df_supressed = df.apply(supress_lownum, relevant_cols=relevant_cols, threshold=THRESHOLD)
+```
+
+```python
+# Run Crosstab with suppressed dataset
+def make_crosstab(df, colname, tablename):
     x = pd.crosstab(df[k], df.is_acsc, margins=True, dropna=False, margins_name="Total")
 
     y = (
@@ -960,10 +983,12 @@ def make_crosstab(colname, tablename):
 
 ```python
 # HTML Output
+from IPython.display import HTML
+
 out = ""
 df_results = []
 for k, v in categorical_features.items():
-    z = make_crosstab(k, v)
+    z = make_crosstab(df_supressed, k, v)
     df_results.append(z)
     out += f"""
         ### {v}
