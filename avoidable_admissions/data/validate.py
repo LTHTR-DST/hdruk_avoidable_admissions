@@ -299,12 +299,12 @@ class EmergencyCareEpisodeSchema(pa.SchemaModel):
         isin=[0, *nhsdd_snomed.edchiefcomplaint["members"]],
         nullable=True,
     )
-    edwaittime: Series[int] = pa.Field(
+    edwaittime: Series[float] = pa.Field(
         description="Derived from NHS Data Model EMERGENCY CARE DATE SEEN FOR TREATMENT and EMERGENCY CARE TIME SEEN FOR TREATMENT and edarrivaldatetime",
         nullable=True,
         ge=0,
     )
-    timeined: Series[int] = pa.Field(
+    timeined: Series[float] = pa.Field(
         description="Derived from NHS Data Model NHS Data Model EMERGENCY CARE DEPARTURE DATE and EMERGENCY CARE DEPARTURE TIME and edarrivaldatetime",
         nullable=True,
         ge=0,
