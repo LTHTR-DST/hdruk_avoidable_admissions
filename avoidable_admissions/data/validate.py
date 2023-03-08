@@ -520,6 +520,15 @@ EmergencyCareFeatureSchema: pa.DataFrameSchema = EmergencyCareEpisodeSchema.add_
                 )
             ],
         ),
+        "edchiefcomplaint_cat": pa.Column(
+            # nullable=True,
+            checks=[
+                pa.Check.isin(
+                    set([*feature_maps.load_ed_cc_mapping().values(), "-"]),
+                    ignore_na=True,
+                )
+            ],
+        ),
     }
 )
 

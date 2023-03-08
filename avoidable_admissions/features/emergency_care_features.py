@@ -160,6 +160,16 @@ def _disstatus(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+def _cc_code(df: pd.DataFrame) -> pd.DataFrame:
+
+    # TODO: This section needs manual review of a good sample size to ensure it works
+
+    cc_mapping = load_ed_cc_mapping()
+    df["edchiefcomplaint_cat"] = replace_values(df.edchiefcomplaint, cc_mapping)
+
+    return df
+
+
 
 def build_all(df: pd.DataFrame) -> pd.DataFrame:
 
@@ -167,6 +177,7 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         df.pipe(_age)
         .pipe(_accommodationstatus)
         .pipe(_acsc_code)
+        .pipe(_cc_code)
         .pipe(_disstatus)
         .pipe(_edacuity)
         .pipe(_edarivalemode)

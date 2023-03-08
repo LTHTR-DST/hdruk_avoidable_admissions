@@ -3,6 +3,7 @@ from typing import Dict
 
 import numpy as np
 import pandas as pd
+import os.path
 
 from avoidable_admissions.data import nhsdd_snomed
 
@@ -514,7 +515,7 @@ def load_apc_acsc_mapping() -> Dict[str, str]:
 
     # TODO: Store this file locally and hit Google Docs only if there is no local file.
 
-    sheet_id = "1M3uS6qh3d9OY31gFxy8858ZxBiFjGE_Y"  # APC - ACSC V1 20230130
+    sheet_id = "1qTSYlxY12lOKQ3pV6Chd-tgY-msir8yB"  # APC - ACSC V2 20230224
     sheet_name = "Sheet1"
     url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
     acsc = pd.read_csv(url, usecols=[0, 1])
@@ -533,7 +534,7 @@ def load_ed_acsc_mapping() -> Dict[str, str]:
 
     # TODO: Store this file locally and hit Google Docs only if there is no local file.
 
-    sheet_id = "1Jsx4Am9a3Hvv7VJwIFb4z4_oV7zXL39e"  # ECDS - ACSC V5 20230130
+    sheet_id = "1uk3T2XwjtaU3ZEvJCdfGRRvl-pkHtTUM"  # ECDS - ACSC V6 20230224
     sheet_name = "ACSC ECDS and ICD-10"
     url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
     url = url.replace(" ", "%20")
@@ -574,3 +575,57 @@ def load_ed_acsc_mapping() -> Dict[str, str]:
     acsc_mapping[1] = "ERROR:Unmapped - Not In Refset"
 
     return acsc_mapping
+
+@lru_cache(maxsize=1)
+def load_ed_cc_mapping() -> Dict[str, str]:
+    """Download SNOMED codes of chief complaints to determined mapping from Sheffield Google Docs
+    and return a dictionary of snomed_code:cc_category
+    """
+    path_to_file = os.path.exists('data/external/cc_mapping.csv')
+    
+    if(path_to_file):
+        url = path_to_file
+    else:
+        sheet_id = "18XbVmWJsccACoTDFd8EBeslKPtsPApqi"  # Chief_Complaint_Coding_V2
+        sheet_name = "Sheet1"
+        url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
+        url = url.replace(" ", "%20")
+        
+    cc = pd.read_csv(url, usecols=[4, 7])
+    cc.columns = cc.columns.str.strip()
+    cc.columns = cc.columns.str.lower().str.replace("[^a-z0-9]+", "_", regex=True)
+    cc_mapping = cc.set_index("snomed_code").chief_complain_category.to_dict()
+
+    # Set ERROR codes to allow validation to pass after feature engineering
+    # TODO: Tidy this up
+
+    # Get the members of the refset from nhsdd_snomed
+    # This file has been automatically generated from the Ontology Server
+    refset_members = nhsdd_snomed.edchiefcomplaint["members"]
+
+    # Create a set of all snomed codes in feature
+    feature_members = cc_mapping.keys()
+
+    # Unmapped codes are the codes in the refset that are not in feature
+    # For each code in refset that is not in feature, set to 'unmapped'
+
+    for i in refset_members:
+        if i not in feature_members:
+            cc_mapping[i] = "ERROR:Unmapped - In Refset"
+
+    # For codes that appear in the mapping but not in the refset
+    # append '|Not-In-Refset' tp existing value
+
+    for k, v in cc_mapping.items():
+        if k not in refset_members:
+            cc_mapping[k] = "ERROR:Mapped - Not In Refset|" + v
+
+    cc_mapping[0] = "ERROR:Missing Data"
+
+    # Add in a placeholder for codes that are neither in the featuremap nor in refset
+    # These are for unforeseen values that may appear in the source data
+
+    cc_mapping[1] = "ERROR:Unmapped - Not In Refset"
+
+    return cc_mapping
+
