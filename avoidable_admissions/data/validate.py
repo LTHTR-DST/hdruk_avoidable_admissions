@@ -119,17 +119,19 @@ class AdmittedCareEpisodeSchema(pa.SchemaModel):
 AdmittedCareEpisodeSchema: pa.DataFrameSchema = (
     AdmittedCareEpisodeSchema.to_schema().add_columns(
         {
-            "diag_[0-9]{2}": pa.Column(
+            "diag_[0-9]{2}$": pa.Column(
+                str,
+                nullable=True,
+                regex=True,
+                # Modified from https://medium.com/@manabu.torii/regex-pattern-for-icd-10-cm-codes-5763bd66e26d and includes string match for 'nan'
+                checks=pa.Check.str_matches(r'^(?i:[A-Z][0-9][0-9AB](?:[0-9A-KXZ](?:[0-9A-EXYZ](?:[0-9A-HX][0-59A-HJKMNP-S]?)?)?)?|^\bnan\b$)$')
+            ),
+            "opertn_[0-9]{2}$": pa.Column(
                 str,
                 nullable=True,
                 regex=True,
             ),
-            "opertn_[0-9]{2}": pa.Column(
-                str,
-                nullable=True,
-                regex=True,
-            ),
-            "opdate_[0-9]{2}": pa.Column(
+            "opdate_[0-9]{2}$": pa.Column(
                 datetime,
                 nullable=True,
                 regex=True,
