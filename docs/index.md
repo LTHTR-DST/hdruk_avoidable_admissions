@@ -33,7 +33,7 @@ To install with optional dependecies for _contributing to development and docume
 pip install "avoidable_admissions[dev] @ git+https://github.com/LTHTR-DST/hdruk_avoidable_admissions.git@<release-name>"
 ```
 
-Replace `<release-name>` with the latest release version e.g. `v.0.3.0`. List of releases can be found here - <https://github.com/LTHTR-DST/hdruk_avoidable_admissions/releases>.
+Replace `<release-name>` with the latest release version e.g. `v0.3.1`. List of releases can be found here - <https://github.com/LTHTR-DST/hdruk_avoidable_admissions/releases>.
 
 Omit `@<release-name>` to install the latest code in the repo.
 
