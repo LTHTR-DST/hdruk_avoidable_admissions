@@ -140,7 +140,25 @@ def _procedures(df: pd.DataFrame) -> pd.DataFrame:
         .count(axis=1)
     )
 
+    rules = {
+        'Yes': df['opertn_count'] > 0,
+        'No': df['opertn_count'] <= 0,
+        'Missing': df['opertn_count'].isna()
+    }
+
+    df['opertn_cat'] = np.select(
+        list(rules.values()), list(rules.keys()), default='Missing'
+    )    
+
     return df
+
+def _comorbidities(df: pd.DataFrame) -> pd.DataFrame:        
+    diag_cols = [f'diag_{i:02d}' for i in range(2, 21)]
+    df['comorb_count'] = df[diag_cols].count(axis=1)
+    df['comorb_cat'] = df['comorb_count'].apply(lambda x: 'Yes' if x > 0 else 'No')
+
+    return df
+
 
 
 def build_all(df: pd.DataFrame) -> pd.DataFrame:
@@ -157,6 +175,7 @@ def build_all(df: pd.DataFrame) -> pd.DataFrame:
         .pipe(_dismeth)
         .pipe(_acsc_code)
         .pipe(_procedures)
+        .pipe(_comorbidities)
     )
 
     return df
