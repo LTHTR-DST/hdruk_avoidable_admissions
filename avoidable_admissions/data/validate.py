@@ -205,6 +205,10 @@ AdmittedCareFeatureSchema: pa.DataFrameSchema = AdmittedCareEpisodeSchema.add_co
             ],
         ),
         "opertn_count": pa.Column(int, nullable=False, checks=[pa.Check.ge(0)]),
+        "opertn_cat": pa.Column(str, nullable=False, checks=[pa.Check.isin(['Yes', 'No', 'Missing'])]),
+        
+        "comorb_count": pa.Column(int, nullable=False, checks=[pa.Check.ge(0)]),
+        "comorb_cat": pa.Column(str, nullable=False, checks=[pa.Check.isin(['Yes', 'No', 'Missing'])]),           
     }
 )
 
