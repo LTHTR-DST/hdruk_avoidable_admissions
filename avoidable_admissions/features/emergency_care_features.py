@@ -164,7 +164,7 @@ def _cc_code(df: pd.DataFrame) -> pd.DataFrame:
 
     # TODO: This section needs manual review of a good sample size to ensure it works
 
-    cc_mapping = load_ed_cc_mapping()
+    cc_mapping = feature_maps.load_ed_cc_mapping()
     df["edchiefcomplaint_cat"] = replace_values(df.edchiefcomplaint, cc_mapping)
 
     return df
