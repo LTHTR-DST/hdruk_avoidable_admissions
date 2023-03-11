@@ -9,9 +9,13 @@ def replace_values(
 ) -> pd.Series:
     # if value is in replacements, keep the value, else use `other` for all others
     # then use replacements to assign the other categories
+    
+    # Convert the replacements dictionary to strings and data type to str to allow replacement by other 
+    replacements_str = {str(k): v for k, v in replacements.items()}
+    data = data.astype(str)
 
     data_cat = (
-        data.where(data.isin(replacements), other).replace(replacements).astype(str)
+        data.where(data.isin(replacements_str), other).replace(replacements_str).astype(str)
     )
 
     return data_cat
