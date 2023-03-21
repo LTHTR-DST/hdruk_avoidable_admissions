@@ -214,6 +214,8 @@ accommodationstatus = generate_map("accommodationstatus", accommodationstatus_r)
 ##############################################################################
 edarrivalmode_r = {
     "Walk-In": [1048061000000105, 1048071000000103],
+    "Ambulance": [1048031000000100, 1048041000000109, 1048021000000102, 1048051000000107],
+    "Other": [1048081000000101, 1047991000000102, 1048001000000106]
 }
 
 edarrivalmode = generate_map("edarrivalmode", edarrivalmode_r)
