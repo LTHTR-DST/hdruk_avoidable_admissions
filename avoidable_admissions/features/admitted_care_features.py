@@ -9,7 +9,9 @@ def _age(df: pd.DataFrame) -> pd.DataFrame:
     age_labels = feature_maps.age_labels
     age_bins = feature_maps.age_bins
 
-    df["admiage_cat"] = pd.cut(df.admiage, bins=age_bins, labels=age_labels)
+    df["admiage_cat"] = pd.cut(
+        df.admiage, bins=age_bins, labels=age_labels, right=False
+    )
 
     return df
 
@@ -77,7 +79,7 @@ def _length_of_stay(df: pd.DataFrame) -> pd.DataFrame:
     # Negative values will get binned as <2 days
 
     df["length_of_stay_cat"] = pd.cut(
-        df.length_of_stay, bins=[-np.inf, 2, np.inf], labels=["<2 days", ">=2 days"]
+        df.length_of_stay, bins=[-np.inf, 1, np.inf], labels=["<2 days", ">=2 days"]
     )
 
     return df
@@ -141,24 +143,24 @@ def _procedures(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     rules = {
-        'Yes': df['opertn_count'] > 0,
-        'No': df['opertn_count'] <= 0,
-        'Missing': df['opertn_count'].isna()
+        "Yes": df["opertn_count"] > 0,
+        "No": df["opertn_count"] <= 0,
+        "Missing": df["opertn_count"].isna(),
     }
 
-    df['opertn_cat'] = np.select(
-        list(rules.values()), list(rules.keys()), default='Missing'
-    )    
+    df["opertn_cat"] = np.select(
+        list(rules.values()), list(rules.keys()), default="Missing"
+    )
 
     return df
 
-def _comorbidities(df: pd.DataFrame) -> pd.DataFrame:        
-    diag_cols = [f'diag_{i:02d}' for i in range(2, 21)]
-    df['comorb_count'] = df[diag_cols].count(axis=1)
-    df['comorb_cat'] = df['comorb_count'].apply(lambda x: 'Yes' if x > 0 else 'No')
+
+def _comorbidities(df: pd.DataFrame) -> pd.DataFrame:
+    diag_cols = [f"diag_{i:02d}" for i in range(2, 21)]
+    df["comorb_count"] = df[diag_cols].count(axis=1)
+    df["comorb_cat"] = df["comorb_count"].apply(lambda x: "Yes" if x > 0 else "No")
 
     return df
-
 
 
 def build_all(df: pd.DataFrame) -> pd.DataFrame:
