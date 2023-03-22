@@ -21,7 +21,7 @@ def _age(df: pd.DataFrame) -> pd.DataFrame:
 
     age_labels = feature_maps.age_labels
     age_bins = feature_maps.age_bins
-    df["activage_cat"] = pd.cut(df.activage, bins=age_bins, labels=age_labels)
+    df["activage_cat"] = pd.cut(df.activage, bins=age_bins, labels=age_labels, right=False)
     df["activage_cat"] = df["activage_cat"].astype(str)
 
     return df
