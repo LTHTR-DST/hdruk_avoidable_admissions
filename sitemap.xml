@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://lthtr-dst.github.io/hdruk_avoidable_admissions/</loc>
+         <lastmod>2023-09-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://lthtr-dst.github.io/hdruk_avoidable_admissions/admitted_care_pipeline_example/</loc>
+         <lastmod>2023-09-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://lthtr-dst.github.io/hdruk_avoidable_admissions/features/</loc>
+         <lastmod>2023-09-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://lthtr-dst.github.io/hdruk_avoidable_admissions/pipeline/</loc>
+         <lastmod>2023-09-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://lthtr-dst.github.io/hdruk_avoidable_admissions/schema/</loc>
+         <lastmod>2023-09-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://lthtr-dst.github.io/hdruk_avoidable_admissions/validation/</loc>
+         <lastmod>2023-09-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>

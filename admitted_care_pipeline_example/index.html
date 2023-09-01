@@ -1,0 +1,2639 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="[HDRUK](https://www.hdruk.ac.uk/) Data Science Collaboration on Avoidable Admissions in the NHS. Led by [School for Health and Related Research](https://www.sheffield.ac.uk/scharr) as Sheffield University.
+">
+      
+      
+        <meta name="author" content="https://github.com/lthtr-dst/">
+      
+      
+        <link rel="canonical" href="https://lthtr-dst.github.io/hdruk_avoidable_admissions/admitted_care_pipeline_example/">
+      
+      
+        <link rel="prev" href="../features/">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.2.6">
+    
+    
+      
+        <title>Complete Pipeline - Avoidable Admissions Analytics Pipeline</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.0e669242.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.85d0ee34.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="green">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#avoidable-admissions-analysis-pipeline-example" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Avoidable Admissions Analytics Pipeline" class="md-header__button md-logo" aria-label="Avoidable Admissions Analytics Pipeline" data-md-component="logo">
+      
+  <img src="../logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Avoidable Admissions Analytics Pipeline
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Complete Pipeline
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/lthtr-dst/hdruk_avoidable_admissions" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../pipeline/" class="md-tabs__link">
+        
+  
+    
+  
+  Analysis Pipeline
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../validation/" class="md-tabs__link">
+        
+  
+    
+  
+  Data Validation
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../features/" class="md-tabs__link">
+        
+  
+    
+  
+  Feature Engineering
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+    
+  
+  Complete Pipeline
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Avoidable Admissions Analytics Pipeline" class="md-nav__button md-logo" aria-label="Avoidable Admissions Analytics Pipeline" data-md-component="logo">
+      
+  <img src="../logo.png" alt="logo">
+
+    </a>
+    Avoidable Admissions Analytics Pipeline
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/lthtr-dst/hdruk_avoidable_admissions" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pipeline/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Analysis Pipeline
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../validation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data Validation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Feature Engineering
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Complete Pipeline
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Complete Pipeline
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#admitted-care-data-set" class="md-nav__link">
+    Admitted Care Data Set
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#load-data" class="md-nav__link">
+    Load Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-overview" class="md-nav__link">
+    Pipeline Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-validation" class="md-nav__link">
+    First Validation
+  </a>
+  
+    <nav class="md-nav" aria-label="First Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admitted-care-episode-validation-rules" class="md-nav__link">
+    Admitted Care Episode Validation Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-using-admittedcareepisodeschema" class="md-nav__link">
+    Validate using AdmittedCareEpisodeSchema
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iterative-dq-fixes" class="md-nav__link">
+    Iterative DQ Fixes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-engineering" class="md-nav__link">
+    Feature engineering
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#second-validation" class="md-nav__link">
+    Second validation
+  </a>
+  
+    <nav class="md-nav" aria-label="Second validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admitted-care-feature-validation-rules" class="md-nav__link">
+    Admitted Care Feature Validation Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fix-minor-dq-issues-and-validate-using-admittedcarefeatureschema" class="md-nav__link">
+    Fix minor DQ issues and validate using AdmittedCareFeatureSchema
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#analysis" class="md-nav__link">
+    Analysis
+  </a>
+  
+    <nav class="md-nav" aria-label="Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#age" class="md-nav__link">
+    Age
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#age-bands" class="md-nav__link">
+    Age Bands
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gender" class="md-nav__link">
+    Gender
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ethnicity" class="md-nav__link">
+    Ethnicity
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#townsend-score-quintile" class="md-nav__link">
+    Townsend Score Quintile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admission-source" class="md-nav__link">
+    Admission Source
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admission-day-of-week" class="md-nav__link">
+    Admission Day of Week
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seasonal-diagnosis" class="md-nav__link">
+    Seasonal Diagnosis
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#length-of-stay" class="md-nav__link">
+    Length of Stay
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discharge-destination" class="md-nav__link">
+    Discharge Destination
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discharge-method" class="md-nav__link">
+    Discharge Method
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-output-for-sheffield" class="md-nav__link">
+    Export Output for Sheffield
+  </a>
+  
+    <nav class="md-nav" aria-label="Export Output for Sheffield">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#export-as-csv" class="md-nav__link">
+    Export as CSV
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#export-as-html" class="md-nav__link">
+    Export as HTML
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#admitted-care-data-set" class="md-nav__link">
+    Admitted Care Data Set
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#load-data" class="md-nav__link">
+    Load Data
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pipeline-overview" class="md-nav__link">
+    Pipeline Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#first-validation" class="md-nav__link">
+    First Validation
+  </a>
+  
+    <nav class="md-nav" aria-label="First Validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admitted-care-episode-validation-rules" class="md-nav__link">
+    Admitted Care Episode Validation Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-using-admittedcareepisodeschema" class="md-nav__link">
+    Validate using AdmittedCareEpisodeSchema
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iterative-dq-fixes" class="md-nav__link">
+    Iterative DQ Fixes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#feature-engineering" class="md-nav__link">
+    Feature engineering
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#second-validation" class="md-nav__link">
+    Second validation
+  </a>
+  
+    <nav class="md-nav" aria-label="Second validation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admitted-care-feature-validation-rules" class="md-nav__link">
+    Admitted Care Feature Validation Rules
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fix-minor-dq-issues-and-validate-using-admittedcarefeatureschema" class="md-nav__link">
+    Fix minor DQ issues and validate using AdmittedCareFeatureSchema
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#analysis" class="md-nav__link">
+    Analysis
+  </a>
+  
+    <nav class="md-nav" aria-label="Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#age" class="md-nav__link">
+    Age
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#age-bands" class="md-nav__link">
+    Age Bands
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gender" class="md-nav__link">
+    Gender
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ethnicity" class="md-nav__link">
+    Ethnicity
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#townsend-score-quintile" class="md-nav__link">
+    Townsend Score Quintile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admission-source" class="md-nav__link">
+    Admission Source
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admission-day-of-week" class="md-nav__link">
+    Admission Day of Week
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#seasonal-diagnosis" class="md-nav__link">
+    Seasonal Diagnosis
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#length-of-stay" class="md-nav__link">
+    Length of Stay
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discharge-destination" class="md-nav__link">
+    Discharge Destination
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discharge-method" class="md-nav__link">
+    Discharge Method
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#export-output-for-sheffield" class="md-nav__link">
+    Export Output for Sheffield
+  </a>
+  
+    <nav class="md-nav" aria-label="Export Output for Sheffield">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#export-as-csv" class="md-nav__link">
+    Export as CSV
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#export-as-html" class="md-nav__link">
+    Export as HTML
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="avoidable-admissions-analysis-pipeline-example">Avoidable Admissions Analysis Pipeline Example</h1>
+<h2 id="admitted-care-data-set">Admitted Care Data Set</h2>
+<pre><code>Site: Lancashire Teaching Hospitals NHS Trust
+Created: 2023-02-04
+
+Lead site: SCHARR Institute, Sheffield University
+</code></pre>
+<h2 id="references">References</h2>
+<ul>
+<li>Statistical Analysis Plan - <a href="https://docs.google.com/document/d/1mpRKxNDbkTPwDhg7S_AaOXwbFQvHjXQRL7Qa31zn7DY/edit">https://docs.google.com/document/d/1mpRKxNDbkTPwDhg7S_AaOXwbFQvHjXQRL7Qa31zn7DY/edit</a></li>
+<li>Data Processing - <a href="https://docs.google.com/document/d/1vysTKmvELK-5Rr7Dib3zDp8mCe_lUVr2e5EES23ShbQ/edit">https://docs.google.com/document/d/1vysTKmvELK-5Rr7Dib3zDp8mCe_lUVr2e5EES23ShbQ/edit</a></li>
+<li>Analysis Tables - <a href="https://docs.google.com/document/d/10PuNTnEG5zTkWOVaMGlfOInleXJ0KA-_5hSH4upwhi4/edit">https://docs.google.com/document/d/10PuNTnEG5zTkWOVaMGlfOInleXJ0KA-_5hSH4upwhi4/edit</a></li>
+<li>LTH GitHub Repo - <a href="https://github.com/LTHTR-DST/hdruk_avoidable_admissions">https://github.com/LTHTR-DST/hdruk_avoidable_admissions</a></li>
+<li>Pipeline Docs - <a href="https://lthtr-dst.github.io/hdruk_avoidable_admissions/">https://lthtr-dst.github.io/hdruk_avoidable_admissions/</a></li>
+<li>Collaboration Docs - <a href="https://mattstammers.github.io/hdruk_avoidable_admissions_collaboration_docs/">https://mattstammers.github.io/hdruk_avoidable_admissions_collaboration_docs/</a></li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="o">%</span><span class="n">load_ext</span> <span class="n">autoreload</span>
+<span class="o">%</span><span class="n">autoreload</span> <span class="mi">2</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting pipeline execution at&quot;</span><span class="p">,</span> <span class="n">now</span><span class="p">)</span>
+</code></pre></div>
+<pre><code>Starting pipeline execution at 2023-02-05 11:51:15.151223
+</code></pre>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">load_dotenv</span>
+
+<span class="n">load_dotenv</span><span class="p">(</span><span class="s2">&quot;../.env&quot;</span><span class="p">)</span>
+
+<span class="n">dir_data</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DIR_DATA&quot;</span><span class="p">))</span>
+<span class="n">dir_data</span>
+</code></pre></div>
+<pre><code>WindowsPath('T:/Business Intelligence/Data Science/Work/hdruk_avoidable_adms')
+</code></pre>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+
+<span class="kn">from</span> <span class="nn">avoidable_admissions.data.validate</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">AdmittedCareEpisodeSchema</span><span class="p">,</span>
+    <span class="n">AdmittedCareFeatureSchema</span><span class="p">,</span>
+    <span class="n">get_schema_properties</span><span class="p">,</span>
+    <span class="n">validate_admitted_care_data</span><span class="p">,</span>
+    <span class="n">validate_admitted_care_features</span><span class="p">,</span>
+    <span class="n">validate_dataframe</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">avoidable_admissions.features</span> <span class="kn">import</span> <span class="n">feature_maps</span>
+<span class="kn">from</span> <span class="nn">avoidable_admissions.features.build_features</span> <span class="kn">import</span> <span class="n">build_admitted_care_features</span>
+</code></pre></div>
+<h2 id="load-data">Load Data</h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># df_admcare = pd.read_csv(dir_data.joinpathpath(&#39;raw&#39;, &#39;admitted_care.csv&#39;)</span>
+<span class="n">df_admcare</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;../data/raw/admitted_care.csv&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Create a copy of the data to fix DQ issues to avoid reloading data from source everytime</span>
+<span class="n">dfa</span> <span class="o">=</span> <span class="n">df_admcare</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="s2">&quot;Raw dataframe contains </span><span class="si">%d</span><span class="s2"> rows and </span><span class="si">%d</span><span class="s2"> columns&quot;</span> <span class="o">%</span> <span class="n">dfa</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<pre><code>'Raw dataframe contains 47483 rows and 63 columns'
+</code></pre>
+<h2 id="pipeline-overview">Pipeline Overview</h2>
+<p>See <a href="https://lthtr-dst.github.io/hdruk_avoidable_admissions/pipeline/">https://lthtr-dst.github.io/hdruk_avoidable_admissions/pipeline/</a> for more details.</p>
+<h2 id="first-validation">First Validation</h2>
+<p>This is done using the raw data typically extracted from SQL databases maintained by Business Intelligence.</p>
+<p>Receiving the data in a format that matches the Sheffield specification as closely as possible will make subsequent steps easier.</p>
+<p>Always, <strong>always</strong>, have friends in BI. Who is your <a href="https://github.com/quindavies">Quin</a>?</p>
+<h3 id="admitted-care-episode-validation-rules">Admitted Care Episode Validation Rules</h3>
+<p>Use <a href="https://lthtr-dst.github.io/hdruk_avoidable_admissions/validation/#avoidable_admissions.data.validate.get_schema_properties"><code>get_schema_properties(Schema)</code></a> for an overview of what the expectations of the first validation schema are.</p>
+<blockquote>
+<p><em>Help improve the validation rules and documentation, eg. title, description, etc. by contributing to the <a href="https://github.com/LTHTR-DST/hdruk_avoidable_admissions">GitHub repo</a> or raising an <a href="https://github.com/LTHTR-DST/hdruk_avoidable_admissions/issues">issue</a>.</em></p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="n">schema_1</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">get_schema_properties</span><span class="p">(</span><span class="n">AdmittedCareEpisodeSchema</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">schema_1</span>
+</code></pre></div>
+<div>
+<style scoped>
+.dataframe {
+  font-size: 0.6rem;
+}
+.dataframe tbody tr th:only-of-type {
+vertical-align: middle;
+}
+
+.dataframe tbody tr th {
+vertical-align: top;
+}
+
+.dataframe thead th {
+text-align: right;
+}
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>dtype</th>
+      <th>nullable</th>
+      <th>unique</th>
+      <th>coerce</th>
+      <th>required</th>
+      <th>checks</th>
+      <th>regex</th>
+      <th>title</th>
+    </tr>
+    <tr>
+      <th>name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>admiage</th>
+      <td>int64</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check greater_than_or_equal_to: greater_than_or_equal_to(18)&gt;, &lt;Check less_than_or_equal_to: less_than_or_equal_to(130)&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>admidate</th>
+      <td>date</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check greater_than_or_equal_to: greater_than_or_equal_to(2021-10-01)&gt;, &lt;Check less_than_or_equal_to: less_than_or_equal_to(2022-09-30)&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>admimeth</th>
+      <td>str</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check isin: isin({'31', '32', '28', '12', '24', '2A', '98', '82', '23', '81', '25', '13', '83', '2C', '21', '2D', '22', '2B', '11', '99'})&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>admisorc</th>
+      <td>str</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check isin: isin({'53', '54', '66', '55', '65', '39', '37', '19', '98', '87', '79', '51', '88', '86', '52', '40', '56', '85', '29', '49', '99'})&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>admitime</th>
+      <td>str</td>
+      <td>True</td>
+      <td>False</td>
+      <td>True</td>
+      <td>True</td>
+      <td>[&lt;Check str_matches: str_matches(re.compile('2[0-3]|[01]?[0-9]:[0-5][0-9]'))&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>diag_01</th>
+      <td>str</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>diag_[0-9]{2}</th>
+      <td>str</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>True</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>disdest</th>
+      <td>str</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check isin: isin({'53', '54', '66', '48', '30', '65', '49', '39', '37', '19', '98', '87', '79', '84', '51', '88', '52', '85', '50', '29', '38', '99'})&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>dismeth</th>
+      <td>str</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check isin: isin({'2', '8', '4', '1', '5', '9', '3'})&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>epiorder</th>
+      <td>int64</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check greater_than_or_equal_to: greater_than_or_equal_to(0)&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>ethnos</th>
+      <td>str</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check isin: isin({'C', 'H', 'M', 'N', 'J', 'R', 'B', 'L', 'A', 'G', 'K', 'S', 'P', 'E', 'Z', 'F', '99', 'D'})&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>gender</th>
+      <td>str</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check isin: isin({'2', 'X', '1', '9', '0'})&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>length_of_stay</th>
+      <td>float64</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check greater_than_or_equal_to: greater_than_or_equal_to(0)&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>opdate_01</th>
+      <td>datetime64[ns]</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>opdate_[0-9]{2}</th>
+      <td>datetime64[ns]</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>True</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>opertn_01</th>
+      <td>str</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>opertn_[0-9]{2}</th>
+      <td>str</td>
+      <td>True</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>True</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>patient_id</th>
+      <td>int64</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>procodet</th>
+      <td>str</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>sitetret</th>
+      <td>str</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>townsend_score_decile</th>
+      <td>int64</td>
+      <td>False</td>
+      <td>False</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[&lt;Check greater_than_or_equal_to: greater_than_or_equal_to(0)&gt;, &lt;Check less_than_or_equal_to: less_than_or_equal_to(10)&gt;]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>visit_id</th>
+      <td>int64</td>
+      <td>False</td>
+      <td>True</td>
+      <td>False</td>
+      <td>True</td>
+      <td>[]</td>
+      <td>False</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h3 id="validate-using-admittedcareepisodeschema">Validate using AdmittedCareEpisodeSchema</h3>
+<p>The first time we try to validate the raw data, there are several errors for multiple reasons.</p>
+<p>Spending a few minutes reading the schema validation error messages as well as reading the documentation for <a href="https://pandera.readthedocs.io/">Pandera</a> will save days for this and future projects.</p>
+<p><a href="https://lthtr-dst.github.io/hdruk_avoidable_admissions/validation/#avoidable_admissions.data.validate.validate_dataframe"><code>validate_dataframe(dfa, AdmittedCareEpisodeSchema)</code></a> is equivalent to <a href="https://lthtr-dst.github.io/hdruk_avoidable_admissions/validation/#avoidable_admissions.data.validate.validate_admitted_care_data"><code>validate_admitted_care_data(dfa)</code></a></p>
+<div class="highlight"><pre><span></span><code><span class="n">good</span><span class="p">,</span> <span class="n">bad</span> <span class="o">=</span> <span class="n">validate_dataframe</span><span class="p">(</span><span class="n">dfa</span><span class="p">,</span> <span class="n">AdmittedCareEpisodeSchema</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Good dataframe has </span><span class="si">%d</span><span class="s2"> rows&quot;</span> <span class="o">%</span> <span class="n">good</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Bad dataframe has </span><span class="si">%d</span><span class="s2"> rows&quot;</span> <span class="o">%</span> <span class="n">bad</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<pre><code>Schema AdmittedCareEpisodeSchema: A total of 18 schema errors were found.
+
+Error Counts
+------------
+- column_not_in_dataframe: 1
+- schema_component_check: 17
+
+Schema Error Summary
+--------------------
+                                                                                                                                                                                                                                     failure_cases  n_failes
+schema_context  column                check
+DataFrameSchema &lt;NA&gt;                  column_in_dataframe                                                                                                                                                                               [visit_id]         1
+Column          admiage               greater_than_or_equal_to(18)                                                                                                                                   [0,3,12,14,4,15,2,6,11,5,1,16,17,10,7,8,13,9]        18
+                admidate              greater_than_                                                                                                               [TypeError("'&gt;=' not supported between instances of 'str' and 'datetime.date'")]         1
+                                      less_than_or_equal_to(2022-09-30)                                                                                           [TypeError("'&lt;=' not supported between instances of 'str' and 'datetime.date'")]         1
+                admimeth              isin({'31','32','28','12','24','2A','98','82','23','81','25','13','83','2C','21','2D','22','2B','11','99'})                                                                                             [27]         1
+                admisorc              dtype('str')                                                                                                                                                                                         [int64]         1
+                                      isin({'53','54','66','55','65','39','37','19','98','87','79','51','88','86','52','40','56','85','29','49','99'})                                                 [51,19,66,52,29,56,99,88,40,49,33,87,79,53]        14
+                disdest               dtype('str')                                                                                                                                                                                         [int64]         1
+                                      isin({'53','54','66','48','30','65','49','39','37','19','98','87','79','84','51','88','52','85','50','29','38','99'})                       [19,99,79,88,29,51,52,85,84,54,38,50,37,66,65,53,87,49,48,98,30]        21
+                dismeth               dtype('str')                                                                                                                                                                                         [int64]         1
+                                      isin({'2','8','4','1','5','9','3'})                                                                                                                                                              [1,4,2,8,9]         5
+                gender                dtype('str')                                                                                                                                                                                         [int64]         1
+                                      isin({'2','X','1','9','0'})                                                                                                                                                                          [2,1,9]         3
+                opdate_01             dtype('datetime64[ns]')                                                                                                                                                                             [object]         1
+                townsend_score_decile dtype('int64')                                                                                                                                                                                     [float64]         1
+                                      not_nullable                                                                                                                                                                                           [nan]         1
+
+Usage Tip
+---------
+
+Directly inspect all errors by catching the exception:
+
+```
+try:
+    schema.validate(dataframe, lazy=True)
+except SchemaErrors as err:
+    err.failure_cases  # dataframe of schema errors
+    err.data  # invalid dataframe
+```
+
+No data will pass validation due to column error. See output above.
+Good dataframe has 0 rows
+Bad dataframe has 246321 rows
+</code></pre>
+<h3 id="iterative-dq-fixes">Iterative DQ Fixes</h3>
+<p>Fix one column or one error at a time and rerun <code>validate_dataframe(dfa, AdmittedCareEpisodeSchema)</code> in the previous cell to check if it has worked.</p>
+<p>If you have made an error in data transformation, rerun <code>dfa = df_admcare.copy()</code> to start again.</p>
+<p><strong>Error Behaviour:</strong> In case of errors other than <a href="https://pandera.readthedocs.io/en/stable/reference/generated/pandera.errors.SchemaErrors.html?highlight=schemaerrors">SchemaErrors</a>, <code>validate_dataframe</code> will print out the error message and return an empty <code>good</code> data frame and a <code>bad</code> dataframe containing all rows in input dataframe. Column errors, i.e., missing, misspelt or unexpected additional columns will also result in identical behaviour.</p>
+<p>The <code>bad</code> dataframe may contain more rows than the input dataframe, as each error generates a new row. For instance, if one row in the input dataframe resulted in 5 errors in different columns, this will generate 5 rows in the <code>bad</code> dataframe, each with details on the specific errors available in additional columns.</p>
+<p>TODO: vc to fix. If you get a <code>ufunc 'bitwise_or' not supported for the input types, and the inputs could not be safely coerced to any supported types according to the casting rule ''safe''</code> error, this is usually caused by a dtype mismatch between <code>datetime</code> in the input data when the validation code expects a <code>date</code> dtype.</p>
+<p><strong>Feature Maps:</strong> These set out what values are allowed in various columns to pass first validation, how these will be transformed during feature engineering and what values are allowed in the new columns to pass second validation. <a href="https://github.com/LTHTR-DST/hdruk_avoidable_admissions/blob/dev/avoidable_admissions/features/feature_maps.py">https://github.com/LTHTR-DST/hdruk_avoidable_admissions/blob/dev/avoidable_admissions/features/feature_maps.py</a></p>
+<blockquote>
+<p>_Help improve this process by raising a GitHub issue if validation fails when it shouldn't or you run into unexpected errors.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;Starting with </span><span class="si">%d</span><span class="s2"> rows and </span><span class="si">%d</span><span class="s2"> columns&quot;</span> <span class="o">%</span> <span class="n">dfa</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<pre><code>'Starting with 47483 rows and 63 columns'
+</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">dfa</span><span class="p">[</span><span class="s2">&quot;visit_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">dfa</span><span class="o">.</span><span class="n">patient_id</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">.</span><span class="n">patient_id</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">dfa</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dfa</span><span class="o">.</span><span class="n">admiage</span> <span class="o">&gt;=</span> <span class="mi">18</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="s2">&quot;Dataframe has </span><span class="si">%d</span><span class="s2"> rows and </span><span class="si">%d</span><span class="s2"> columns&quot;</span> <span class="o">%</span> <span class="n">dfa</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<pre><code>'Dataframe has 39168 rows and 64 columns'
+</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">cols_opdate</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">regex</span><span class="o">=</span><span class="s2">&quot;opdate&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span>
+<span class="n">dfa</span><span class="p">[</span><span class="n">cols_opdate</span><span class="p">]</span> <span class="o">=</span> <span class="n">dfa</span><span class="p">[</span><span class="n">cols_opdate</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">,</span> <span class="n">dayfirst</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">dfa</span><span class="o">.</span><span class="n">admidate</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">dfa</span><span class="o">.</span><span class="n">admidate</span><span class="p">,</span> <span class="n">dayfirst</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># dfa.admimeth = dfa.admimeth.astype(str)</span>
+<span class="n">dfa</span> <span class="o">=</span> <span class="n">dfa</span><span class="p">[</span><span class="n">dfa</span><span class="o">.</span><span class="n">admimeth</span> <span class="o">!=</span> <span class="s2">&quot;27&quot;</span><span class="p">]</span>  <span class="c1"># Careful</span>
+<span class="s2">&quot;Dataframe has </span><span class="si">%d</span><span class="s2"> rows and </span><span class="si">%d</span><span class="s2"> columns&quot;</span> <span class="o">%</span> <span class="n">dfa</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<pre><code>'Dataframe has 39167 rows and 64 columns'
+</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">dfa</span><span class="o">.</span><span class="n">admisorc</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">.</span><span class="n">admisorc</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">dfa</span> <span class="o">=</span> <span class="n">dfa</span><span class="p">[</span><span class="n">dfa</span><span class="o">.</span><span class="n">admisorc</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">feature_maps</span><span class="o">.</span><span class="n">admisorc</span><span class="p">)]</span>
+<span class="n">dfa</span> <span class="o">=</span> <span class="n">dfa</span><span class="p">[</span><span class="n">dfa</span><span class="o">.</span><span class="n">admimeth</span> <span class="o">!=</span> <span class="s2">&quot;27&quot;</span><span class="p">]</span>  <span class="c1"># Careful</span>
+<span class="s2">&quot;Dataframe has </span><span class="si">%d</span><span class="s2"> rows and </span><span class="si">%d</span><span class="s2"> columns&quot;</span> <span class="o">%</span> <span class="n">dfa</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<pre><code>'Dataframe has 39166 rows and 64 columns'
+</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">dfa</span><span class="o">.</span><span class="n">gender</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">.</span><span class="n">gender</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">dfa</span><span class="o">.</span><span class="n">disdest</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">.</span><span class="n">disdest</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">dfa</span> <span class="o">=</span> <span class="n">dfa</span><span class="p">[</span><span class="n">dfa</span><span class="o">.</span><span class="n">disdest</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">feature_maps</span><span class="o">.</span><span class="n">disdest</span><span class="p">)]</span>
+<span class="s2">&quot;Dataframe has </span><span class="si">%d</span><span class="s2"> rows and </span><span class="si">%d</span><span class="s2"> columns&quot;</span> <span class="o">%</span> <span class="n">dfa</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<pre><code>'Dataframe has 39166 rows and 64 columns'
+</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">dfa</span><span class="o">.</span><span class="n">dismeth</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">.</span><span class="n">dismeth</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+<span class="n">dfa</span> <span class="o">=</span> <span class="n">dfa</span><span class="p">[</span><span class="n">dfa</span><span class="o">.</span><span class="n">dismeth</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">feature_maps</span><span class="o">.</span><span class="n">dismeth</span><span class="p">)]</span>
+<span class="s2">&quot;Dataframe has </span><span class="si">%d</span><span class="s2"> rows and </span><span class="si">%d</span><span class="s2"> columns&quot;</span> <span class="o">%</span> <span class="n">dfa</span><span class="o">.</span><span class="n">shape</span>
+</code></pre></div>
+<pre><code>'Dataframe has 39166 rows and 64 columns'
+</code></pre>
+<div class="highlight"><pre><span></span><code><span class="c1"># Set missing IMD values to 0 to pass validation. Address how this is dealth with at the analytics stage.</span>
+<span class="c1"># This is to get around the quirks of what nan means in the Pandas (and Pandera) world.</span>
+<span class="n">dfa</span><span class="o">.</span><span class="n">townsend_score_decile</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">.</span><span class="n">townsend_score_decile</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># If everything above worked, this should not throw any errors.</span>
+<span class="n">good</span><span class="p">,</span> <span class="n">bad</span> <span class="o">=</span> <span class="n">validate_admitted_care_data</span><span class="p">(</span><span class="n">dfa</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Good dataframe has </span><span class="si">%d</span><span class="s2"> rows&quot;</span> <span class="o">%</span> <span class="n">good</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Bad dataframe has </span><span class="si">%d</span><span class="s2"> rows&quot;</span> <span class="o">%</span> <span class="n">bad</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<pre><code>Good dataframe has 39166 rows
+Bad dataframe has 0 rows
+</code></pre>
+<h2 id="feature-engineering">Feature engineering</h2>
+<p>See documentation here: <a href="https://lthtr-dst.github.io/hdruk_avoidable_admissions/features/">https://lthtr-dst.github.io/hdruk_avoidable_admissions/features/</a></p>
+<p>This has been written to Sheffield's specifications and will change if the specification changes.</p>
+<blockquote>
+<p>_Help improve this process by raising a <a href="https://github.com/LTHTR-DST/hdruk_avoidable_admissions/issues">GitHub issue</a> or contributing code.</p>
+</blockquote>
+<div class="highlight"><pre><span></span><code><span class="n">dff</span> <span class="o">=</span> <span class="n">build_admitted_care_features</span><span class="p">(</span><span class="n">good</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+</code></pre></div>
+<h2 id="second-validation">Second validation</h2>
+<p>Second validation and addressing DQ is identical to the first validation process.</p>
+<h3 id="admitted-care-feature-validation-rules">Admitted Care Feature Validation Rules</h3>
+<p>The features dataframe should contain all columns from the initial dataframe <em>and</em> the new generated features.</p>
+<p>Once again have a look at <a href="https://github.com/LTHTR-DST/hdruk_avoidable_admissions/blob/dev/avoidable_admissions/features/feature_maps.py"><code>feature_maps.py</code></a> for more details.</p>
+<p>Let's look at only the new features and the rules that apply to them.</p>
+<div class="highlight"><pre><span></span><code><span class="n">schema_2</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">get_schema_properties</span><span class="p">(</span><span class="n">AdmittedCareFeatureSchema</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">schema_2</span><span class="p">[</span><span class="o">~</span><span class="n">schema_2</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">schema_1</span><span class="o">.</span><span class="n">index</span><span class="p">)]</span>
+</code></pre></div>
+<div>
+<style scoped>
+.dataframe {
+  font-size: 0.6rem;
+}
+.dataframe tbody tr th:only-of-type {
+vertical-align: middle;
+}
+
+.dataframe tbody tr th {
+vertical-align: top;
+}
+
+.dataframe thead th {
+text-align: right;
+}
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>dtype</th>
+<th>nullable</th>
+<th>unique</th>
+<th>coerce</th>
+<th>required</th>
+<th>checks</th>
+<th>regex</th>
+<th>title</th>
+<th>description</th>
+</tr>
+<tr>
+<th>name</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>admiage_cat</th>
+<td>str</td>
+<td>False</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'65 - 69', '25 - 29', '75 ...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>admidayofweek</th>
+<td>None</td>
+<td>True</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'Sunday', 'Wednesday', 'Mo...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>admisorc_cat</th>
+<td>None</td>
+<td>True</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'Medical care', 'Residence...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>diag_01_acsc</th>
+<td>None</td>
+<td>False</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'COPD', 'Pneumothorax ', '...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>diag_seasonal_cat</th>
+<td>None</td>
+<td>True</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'Respiratory infection', '...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>disdest_cat</th>
+<td>None</td>
+<td>True</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'Medical care', 'Died', 'C...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>dismeth_cat</th>
+<td>None</td>
+<td>True</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'Died', 'Discharged', 'Unk...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>ethnos_cat</th>
+<td>str</td>
+<td>True</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'Other Ethnic Groups', 'As...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>gender_cat</th>
+<td>str</td>
+<td>False</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'Female', 'Indeterminate',...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>length_of_stay_cat</th>
+<td>None</td>
+<td>True</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check isin: isin({'&gt;=2 days', '&lt;2 days'})&gt;]</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>opertn_count</th>
+<td>int64</td>
+<td>False</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check greater_than_or_equal_to: greater_than...</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+<tr>
+<th>townsend_score_quintile</th>
+<td>int64</td>
+<td>True</td>
+<td>False</td>
+<td>False</td>
+<td>True</td>
+<td>[&lt;Check in_range: in_range(0, 5)&gt;]</td>
+<td>False</td>
+<td>None</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<h3 id="fix-minor-dq-issues-and-validate-using-admittedcarefeatureschema">Fix minor DQ issues and validate using AdmittedCareFeatureSchema</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># TODO: vc to fix. Easiest will be to validate this as datetime rather than date</span>
+<span class="n">dff</span><span class="o">.</span><span class="n">admidate</span> <span class="o">=</span> <span class="n">dff</span><span class="o">.</span><span class="n">admidate</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># TODO: vc to fix. build_features makes this a categorical variable. Needs to be fixed either in build_features or in the validation schema</span>
+<span class="n">dff</span><span class="o">.</span><span class="n">admiage_cat</span> <span class="o">=</span> <span class="n">dff</span><span class="o">.</span><span class="n">admiage_cat</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">good_f</span><span class="p">,</span> <span class="n">bad_f</span> <span class="o">=</span> <span class="n">validate_dataframe</span><span class="p">(</span><span class="n">dff</span><span class="p">,</span> <span class="n">AdmittedCareFeatureSchema</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Good dataframe has </span><span class="si">%d</span><span class="s2"> rows&quot;</span> <span class="o">%</span> <span class="n">good_f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Bad dataframe has </span><span class="si">%d</span><span class="s2"> rows&quot;</span> <span class="o">%</span> <span class="n">bad_f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</code></pre></div>
+<pre><code>Good dataframe has 39166 rows
+Bad dataframe has 0 rows
+</code></pre>
+<h2 id="analysis">Analysis</h2>
+<p>Refer to <a href="https://docs.google.com/document/d/10PuNTnEG5zTkWOVaMGlfOInleXJ0KA-_5hSH4upwhi4/edit">https://docs.google.com/document/d/10PuNTnEG5zTkWOVaMGlfOInleXJ0KA-_5hSH4upwhi4/edit</a> for details.</p>
+<div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">good_f</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</code></pre></div>
+<p>This section describes the analysis populations or the analysis of the APC data. These populations will be referred to in the analysis descriptions that follow.</p>
+<p><strong>All Acute Admissions</strong></p>
+<p>This analysis population includes all acute admissions.</p>
+<p><em>Filter:</em> (admimeth in 21, 22, 23, 24, 25, 2A, 2B, 2C, 2D, 28) &amp; (epiorder = 1)</p>
+<p>These filters should have been applied to the original data extract.</p>
+<p><strong>All Acute Admissions for ACSCs</strong></p>
+<p>This analysis population includes all acute admissions where the primary diagnosis from the first episode is an ACSC.</p>
+<p><em>Filter:</em> (admimeth in 21, 22, 23, 24, 25, 2A, 2B, 2C, 2D, 28) &amp; (epiorder = 1) &amp; (diag_01 = ACSC_Code_APC)</p>
+<p><strong>All Acute Admissions for Non-ACSCs</strong></p>
+<p>This analysis population includes all acute admissions where the primary diagnosis from the first episode is not an ACSC.</p>
+<p><em>Filter:</em> (admimeth in 21, 22, 23, 24, 25, 2A, 2B, 2C, 2D, 28) &amp; (epiorder = 1) &amp; (diag_01 != ACSC_Code_APC)</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># All acute admissions - this should be redundant if done at extraction</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">admimeth</span><span class="o">.</span><span class="n">isin</span><span class="p">({</span><span class="s2">&quot;21&quot;</span><span class="p">,</span> <span class="s2">&quot;22&quot;</span><span class="p">,</span> <span class="s2">&quot;23&quot;</span><span class="p">,</span> <span class="s2">&quot;24&quot;</span><span class="p">,</span> <span class="s2">&quot;25&quot;</span><span class="p">,</span> <span class="s2">&quot;2A&quot;</span><span class="p">,</span> <span class="s2">&quot;2B&quot;</span><span class="p">,</span> <span class="s2">&quot;2C&quot;</span><span class="p">,</span> <span class="s2">&quot;2D&quot;</span><span class="p">,</span> <span class="s2">&quot;28&quot;</span><span class="p">}))</span>
+    <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">epiorder</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="c1"># Acute admissions by ACSC status</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;is_acsc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">diag_01_acsc</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">diag_01_acsc</span> <span class="o">==</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;ACSC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+    <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;Non-ACSC&quot;</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="age">Age</h3>
+<div class="highlight"><pre><span></span><code><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">admiage</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;All&quot;</span><span class="p">),</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;is_acsc&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">admiage</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">],</span>
+    <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</code></pre></div>
+<div>
+<style scoped>
+.dataframe {
+font-size: 0.6rem;
+}
+.dataframe tbody tr th:only-of-type {
+vertical-align: middle;
+}
+
+.dataframe tbody tr th {
+vertical-align: top;
+}
+
+.dataframe thead th {
+text-align: right;
+}
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>count</th>
+<th>mean</th>
+<th>std</th>
+<th>min</th>
+<th>25%</th>
+<th>50%</th>
+<th>75%</th>
+<th>max</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>All</th>
+<td>3#.##</td>
+<td>5#.##</td>
+<td>2#.##</td>
+<td>1#.##</td>
+<td>3#.##</td>
+<td>6#.##</td>
+<td>7#.##</td>
+<td>1#.##</td>
+</tr>
+<tr>
+<th>ACSC</th>
+<td>1#.##</td>
+<td>6#.##</td>
+<td>1#.##</td>
+<td>1#.##</td>
+<td>5#.##</td>
+<td>6#.##</td>
+<td>8#.##</td>
+<td>1#.##</td>
+</tr>
+<tr>
+<th>Non-ACSC</th>
+<td>2#.##</td>
+<td>5#.##</td>
+<td>2#.##</td>
+<td>1#.##</td>
+<td>3#.##</td>
+<td>5#.##</td>
+<td>7#.##</td>
+<td>1#.##</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div class="highlight"><pre><span></span><code><span class="n">categorical_features</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;admiage_cat&quot;</span><span class="p">:</span> <span class="s2">&quot;Age Bands&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gender_cat&quot;</span><span class="p">:</span> <span class="s2">&quot;Gender&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ethnos_cat&quot;</span><span class="p">:</span> <span class="s2">&quot;Ethnicity&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;townsend_score_quintile&quot;</span><span class="p">:</span> <span class="s2">&quot;Townsend Score Quintile&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;admisorc_cat&quot;</span><span class="p">:</span> <span class="s2">&quot;Admission Source&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;admidayofweek&quot;</span><span class="p">:</span> <span class="s2">&quot;Admission Day of Week&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;diag_seasonal_cat&quot;</span><span class="p">:</span> <span class="s2">&quot;Seasonal Diagnosis&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;length_of_stay_cat&quot;</span><span class="p">:</span> <span class="s2">&quot;Length of Stay&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;disdest_cat&quot;</span><span class="p">:</span> <span class="s2">&quot;Discharge Destination&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dismeth_cat&quot;</span><span class="p">:</span> <span class="s2">&quot;Discharge Method&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">make_crosstab</span><span class="p">(</span><span class="n">colname</span><span class="p">,</span> <span class="n">tablename</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">df</span><span class="o">.</span><span class="n">is_acsc</span><span class="p">,</span> <span class="n">margins</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">margins_name</span><span class="o">=</span><span class="s2">&quot;Total&quot;</span><span class="p">)</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">is_acsc</span><span class="p">,</span>
+            <span class="n">normalize</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">,</span>
+            <span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">margins_name</span><span class="o">=</span><span class="s2">&quot;Total&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ACSC&quot;</span><span class="p">:</span> <span class="s2">&quot;ACSC %&quot;</span><span class="p">,</span> <span class="s2">&quot;Non-ACSC&quot;</span><span class="p">:</span> <span class="s2">&quot;Non-ACSC %&quot;</span><span class="p">})</span>
+    <span class="p">)</span>
+
+    <span class="n">z</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+
+    <span class="n">z</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">MultiIndex</span><span class="o">.</span><span class="n">from_tuples</span><span class="p">([(</span><span class="n">v</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">z</span><span class="o">.</span><span class="n">index</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">z</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># HTML Output</span>
+<span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">df_results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">categorical_features</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">make_crosstab</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="n">df_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        ### </span><span class="si">{</span><span class="n">v</span><span class="si">}</span>
+<span class="s2">        </span><span class="si">{</span><span class="n">z</span><span class="o">.</span><span class="n">to_html</span><span class="p">()</span><span class="si">}</span>
+
+<span class="s2">        &quot;&quot;&quot;</span>
+<span class="n">df_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">df_results</span><span class="p">)</span>
+<span class="n">HTML</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="age-bands">Age Bands</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="16" valign="top">Age Bands</th>
+<th>18-19</th>
+<td>1###</td>
+<td>1#.##</td>
+<td>7###</td>
+<td>8#.##</td>
+<td>9###</td>
+</tr>
+<tr>
+<th>20 - 24</th>
+<td>4###</td>
+<td>2#.##</td>
+<td>1###</td>
+<td>7#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>25 - 29</th>
+<td>4###</td>
+<td>1#.##</td>
+<td>2###</td>
+<td>8#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>30 - 34</th>
+<td>5###</td>
+<td>2#.##</td>
+<td>1###</td>
+<td>7#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>35 - 39</th>
+<td>5###</td>
+<td>2#.##</td>
+<td>1###</td>
+<td>7#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>40 - 44</th>
+<td>6###</td>
+<td>3#.##</td>
+<td>1###</td>
+<td>6#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>45 - 49</th>
+<td>7###</td>
+<td>3#.##</td>
+<td>1###</td>
+<td>6#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>50 - 54</th>
+<td>9###</td>
+<td>4#.##</td>
+<td>1###</td>
+<td>5#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>55 - 59</th>
+<td>1###</td>
+<td>4#.##</td>
+<td>1###</td>
+<td>5#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>60 - 64</th>
+<td>1###</td>
+<td>4#.##</td>
+<td>1###</td>
+<td>5#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>65 - 69</th>
+<td>1###</td>
+<td>4#.##</td>
+<td>1###</td>
+<td>5#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>70 - 74</th>
+<td>1###</td>
+<td>4#.##</td>
+<td>1###</td>
+<td>5#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>75 - 79</th>
+<td>1###</td>
+<td>4#.##</td>
+<td>1###</td>
+<td>5#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>80 - 84</th>
+<td>1###</td>
+<td>4#.##</td>
+<td>1###</td>
+<td>5#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>&gt;85</th>
+<td>2###</td>
+<td>4#.##</td>
+<td>2###</td>
+<td>5#.##</td>
+<td>4###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="gender">Gender</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="4" valign="top">Gender</th>
+<th>Female</th>
+<td>8###</td>
+<td>3#.##</td>
+<td>1###</td>
+<td>6#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>Indeterminate</th>
+<td>4###</td>
+<td>3#.##</td>
+<td>9###</td>
+<td>6#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Male</th>
+<td>7###</td>
+<td>4#.##</td>
+<td>9###</td>
+<td>5#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="ethnicity">Ethnicity</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="8" valign="top">Ethnicity</th>
+<th>Asian or Asian British</th>
+<td>7###</td>
+<td>3#.##</td>
+<td>1###</td>
+<td>6#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>Black or Black British</th>
+<td>1###</td>
+<td>3#.##</td>
+<td>1###</td>
+<td>6#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>Mixed</th>
+<td>9###</td>
+<td>3#.##</td>
+<td>2###</td>
+<td>6#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>Not known</th>
+<td>1###</td>
+<td>0#.##</td>
+<td>1###</td>
+<td>1#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Not stated</th>
+<td>5###</td>
+<td>2#.##</td>
+<td>1###</td>
+<td>7#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>Other Ethnic Groups</th>
+<td>1###</td>
+<td>3#.##</td>
+<td>2###</td>
+<td>6#.##</td>
+<td>4###</td>
+</tr>
+<tr>
+<th>White</th>
+<td>1###</td>
+<td>4#.##</td>
+<td>2###</td>
+<td>5#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="townsend-score-quintile">Townsend Score Quintile</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="7" valign="top">Townsend Score Quintile</th>
+<th>0</th>
+<td>1###</td>
+<td>2#.##</td>
+<td>2###</td>
+<td>7#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>1</th>
+<td>3###</td>
+<td>3#.##</td>
+<td>5###</td>
+<td>6#.##</td>
+<td>9###</td>
+</tr>
+<tr>
+<th>2</th>
+<td>3###</td>
+<td>3#.##</td>
+<td>4###</td>
+<td>6#.##</td>
+<td>7###</td>
+</tr>
+<tr>
+<th>3</th>
+<td>2###</td>
+<td>3#.##</td>
+<td>3###</td>
+<td>6#.##</td>
+<td>5###</td>
+</tr>
+<tr>
+<th>4</th>
+<td>3###</td>
+<td>3#.##</td>
+<td>5###</td>
+<td>6#.##</td>
+<td>8###</td>
+</tr>
+<tr>
+<th>5</th>
+<td>3###</td>
+<td>4#.##</td>
+<td>4###</td>
+<td>5#.##</td>
+<td>7###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="admission-source">Admission Source</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="6" valign="top">Admission Source</th>
+<th>Care Home</th>
+<td>2###</td>
+<td>1#.##</td>
+<td>1###</td>
+<td>8#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Medical care</th>
+<td>8###</td>
+<td>3#.##</td>
+<td>1###</td>
+<td>6#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>Penal</th>
+<td>5###</td>
+<td>5#.##</td>
+<td>5###</td>
+<td>5#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Residence</th>
+<td>1###</td>
+<td>3#.##</td>
+<td>2###</td>
+<td>6#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>Unknown</th>
+<td>1###</td>
+<td>1#.##</td>
+<td>5###</td>
+<td>8#.##</td>
+<td>6###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="admission-day-of-week">Admission Day of Week</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="8" valign="top">Admission Day of Week</th>
+<th>Friday</th>
+<td>2###</td>
+<td>4#.##</td>
+<td>3###</td>
+<td>5#.##</td>
+<td>6###</td>
+</tr>
+<tr>
+<th>Monday</th>
+<td>2###</td>
+<td>3#.##</td>
+<td>3###</td>
+<td>6#.##</td>
+<td>5###</td>
+</tr>
+<tr>
+<th>Saturday</th>
+<td>1###</td>
+<td>3#.##</td>
+<td>2###</td>
+<td>6#.##</td>
+<td>4###</td>
+</tr>
+<tr>
+<th>Sunday</th>
+<td>1###</td>
+<td>3#.##</td>
+<td>2###</td>
+<td>6#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>Thursday</th>
+<td>2###</td>
+<td>4#.##</td>
+<td>3###</td>
+<td>5#.##</td>
+<td>6###</td>
+</tr>
+<tr>
+<th>Tuesday</th>
+<td>2###</td>
+<td>3#.##</td>
+<td>3###</td>
+<td>6#.##</td>
+<td>6###</td>
+</tr>
+<tr>
+<th>Wednesday</th>
+<td>2###</td>
+<td>4#.##</td>
+<td>3###</td>
+<td>5#.##</td>
+<td>6###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="seasonal-diagnosis">Seasonal Diagnosis</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="4" valign="top">Seasonal Diagnosis</th>
+<th>-</th>
+<td>1###</td>
+<td>3#.##</td>
+<td>2###</td>
+<td>6#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>Chronic disease exacerbation</th>
+<td>1###</td>
+<td>9#.##</td>
+<td>9###</td>
+<td>7#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Respiratory infection</th>
+<td>1###</td>
+<td>8#.##</td>
+<td>2###</td>
+<td>1#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="length-of-stay">Length of Stay</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="3" valign="top">Length of Stay</th>
+<th>&lt;2 days</th>
+<td>7###</td>
+<td>3#.##</td>
+<td>1###</td>
+<td>6#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>&gt;=2 days</th>
+<td>8###</td>
+<td>4#.##</td>
+<td>1###</td>
+<td>5#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="discharge-destination">Discharge Destination</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="7" valign="top">Discharge Destination</th>
+<th>Care Home</th>
+<td>2###</td>
+<td>3#.##</td>
+<td>5###</td>
+<td>6#.##</td>
+<td>7###</td>
+</tr>
+<tr>
+<th>Died</th>
+<td>1###</td>
+<td>3#.##</td>
+<td>3###</td>
+<td>6#.##</td>
+<td>4###</td>
+</tr>
+<tr>
+<th>Medical care</th>
+<td>1###</td>
+<td>2#.##</td>
+<td>5###</td>
+<td>7#.##</td>
+<td>6###</td>
+</tr>
+<tr>
+<th>Penal</th>
+<td>3###</td>
+<td>1#.##</td>
+<td>2###</td>
+<td>8#.##</td>
+<td>2###</td>
+</tr>
+<tr>
+<th>Residence</th>
+<td>1###</td>
+<td>4#.##</td>
+<td>1###</td>
+<td>5#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>Unknown</th>
+<td>1###</td>
+<td>3#.##</td>
+<td>2###</td>
+<td>6#.##</td>
+<td>4###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="discharge-method">Discharge Method</h3>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>is_acsc</th>
+<th>ACSC</th>
+<th>ACSC %</th>
+<th>Non-ACSC</th>
+<th>Non-ACSC %</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th rowspan="5" valign="top">Discharge Method</th>
+<th>Died</th>
+<td>5###</td>
+<td>3#.##</td>
+<td>1###</td>
+<td>6#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Discharged</th>
+<td>1###</td>
+<td>3#.##</td>
+<td>2###</td>
+<td>6#.##</td>
+<td>3###</td>
+</tr>
+<tr>
+<th>Not Applicable</th>
+<td>1###</td>
+<td>0#.##</td>
+<td>1###</td>
+<td>1#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Unknown</th>
+<td>1###</td>
+<td>0#.##</td>
+<td>1###</td>
+<td>1#.##</td>
+<td>1###</td>
+</tr>
+<tr>
+<th>Total</th>
+<td>1###</td>
+<td>-</td>
+<td>2###</td>
+<td>-</td>
+<td>3###</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="export-output-for-sheffield">Export Output for Sheffield</h2>
+<div class="highlight"><pre><span></span><code><span class="n">timestamp</span> <span class="o">=</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">T%H%M%S&quot;</span><span class="p">)</span>
+<span class="n">timestamp</span>
+</code></pre></div>
+<pre><code>'2023_02_05T115115'
+</code></pre>
+<h3 id="export-as-csv">Export as CSV</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># save df_results to a CSV to send to Sheffield for programmatic meta-analysis</span>
+<span class="c1"># df_results.to_csv(&#39;path/to/results_timestamp.csv&#39;)</span>
+</code></pre></div>
+<h3 id="export-as-html">Export as HTML</h3>
+<div class="highlight"><pre><span></span><code><span class="n">output_head</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;h1&gt; LTH Admitted Care Analysis Tables Draft&lt;/h1&gt;</span>
+
+<span class="s2">&lt;pre&gt;</span>
+<span class="s2">prepared: </span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span>
+<span class="s2">email:    datascience@lthtr.nhs.uk</span>
+<span class="s2">github:   &lt;a href=&#39;https://github.com/LTHTR-DST/&#39;&gt;https://github.com/LTHTR-DST/&lt;/a&gt;</span>
+<span class="s2">&lt;/pre&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">fp</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;../reports/lth_admitted_care_analysis_tables_draft_</span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">.html&quot;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">df_results</span><span class="o">.</span><span class="n">to_html</span><span class="p">()</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">output_head</span> <span class="o">+</span> <span class="n">x</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Finished pipeline execution in&quot;</span><span class="p">,</span>
+    <span class="nb">round</span><span class="p">((</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()),</span>
+    <span class="s2">&quot;seconds at&quot;</span><span class="p">,</span>
+    <span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span>
+<span class="p">)</span>
+</code></pre></div>
+<pre><code>Finished pipeline execution in 9 seconds at 2023-02-05 11:51:24.288155
+</code></pre>
+<p>The above outputs can easily be shared and if all sites used the same code, Sheffield should be able to generate the 'meta-analysis' more easily.</p>
+<p>END OF NOTEBOOK</p>
+<hr />
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy", "navigation.expand", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow"], "search": "../assets/javascripts/workers/search.dfff1995.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.78eede0e.min.js"></script>
+      
+    
+  </body>
+</html>
